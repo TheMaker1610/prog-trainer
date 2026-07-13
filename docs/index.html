@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#0e0f16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Прог. теория">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167.png">
+<title>Тренажёр · Программирование</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23181a26'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' fill='%238b7bff' font-family='monospace' font-weight='bold'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0e0f16; --panel:#181a26; --panel2:#1f2233; --stroke:#2a2e44;
+  --ink:#e8eaf5; --muted:#8a90ab; --faint:#5b6180;
+  --brand:#8b7bff; --brand2:#5b8cff;
+  --ok:#33d69f; --ok-bg:rgba(51,214,159,.13); --ok-line:rgba(51,214,159,.55);
+  --bad:#f76b7f; --bad-bg:rgba(247,107,127,.13); --bad-line:rgba(247,107,127,.5);
+  --gold:#f2c14e;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,'JetBrains Mono','SFMono-Regular',Menlo,Consolas,monospace;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(120% 55% at 50% -8%, rgba(139,123,255,.14) 0%, rgba(139,123,255,0) 60%),
+    var(--bg);
+  color:var(--ink); font-family:var(--sans);
+  min-height:100vh; min-height:100dvh; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:560px; margin:0 auto; padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 24px);}
+.mono{font-family:var(--mono);}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint);}
+button{font-family:inherit; color:inherit; cursor:pointer; border:none; background:none;}
+.hidden{display:none !important;}
+
+/* ---------- HOME ---------- */
+.brand{display:flex; align-items:center; gap:12px; margin:6px 0 4px;}
+.logo{
+  width:44px; height:44px; border-radius:12px; flex:0 0 auto;
+  display:grid; place-items:center; font-family:var(--mono); font-weight:800; font-size:18px;
+  color:#fff; background:linear-gradient(145deg,var(--brand),var(--brand2));
+  box-shadow:0 8px 24px rgba(139,123,255,.35);
+}
+.brand h1{font-size:20px; margin:0; letter-spacing:-.2px;}
+.brand p{margin:1px 0 0; font-size:12.5px; color:var(--muted);}
+
+.statbar{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:16px 0 18px;
+}
+.stat{
+  background:var(--panel); border:1px solid var(--stroke); border-radius:12px;
+  padding:11px 12px; text-align:left;
+}
+.stat b{display:block; font-family:var(--mono); font-size:19px; color:var(--ink); line-height:1.1;}
+.stat span{font-size:10.5px; color:var(--muted); letter-spacing:.02em;}
+.stat b.accent{color:var(--brand);}
+.stat b.gold{color:var(--gold);}
+
+.quick{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;}
+.qbtn{
+  border:1px solid var(--stroke); border-radius:14px; padding:14px 14px; text-align:left;
+  background:linear-gradient(160deg,var(--panel2),var(--panel));
+  transition:transform .12s ease, border-color .12s ease;
+}
+.qbtn:active{transform:scale(.97);}
+.qbtn .k{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--brand);}
+.qbtn .t{font-size:15px; font-weight:600; margin-top:4px;}
+.qbtn .d{font-size:11.5px; color:var(--muted); margin-top:2px;}
+.qbtn.primary{border-color:transparent; background:linear-gradient(150deg,var(--brand),var(--brand2));}
+.qbtn.primary .k{color:rgba(255,255,255,.85);}
+.qbtn.primary .d{color:rgba(255,255,255,.8);}
+
+.sechead{display:flex; align-items:baseline; justify-content:space-between; margin:4px 2px 10px;}
+.sechead .eyebrow{color:var(--muted);}
+.sechead small{font-family:var(--mono); font-size:11px; color:var(--faint);}
+
+.topics{display:flex; flex-direction:column; gap:8px;}
+.topic{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+  background:var(--panel); border:1px solid var(--stroke); border-radius:13px;
+  padding:12px 13px; transition:transform .12s ease, border-color .12s ease;
+}
+.topic:active{transform:scale(.985); border-color:var(--brand);}
+.topic .num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+  font-family:var(--mono); font-weight:700; font-size:13px; color:var(--brand);
+  background:rgba(139,123,255,.12); border:1px solid rgba(139,123,255,.22);
+}
+.topic .body{flex:1 1 auto; min-width:0;}
+.topic .name{font-size:14px; font-weight:600; line-height:1.25;}
+.topic .meta{font-size:11px; color:var(--faint); font-family:var(--mono); margin-top:2px;}
+.topic .best{flex:0 0 auto; font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right;}
+.topic .best b{display:block; font-size:14px;}
+.topic .best.good b{color:var(--ok);} .topic .best.mid b{color:var(--gold);} .topic .best.low b{color:var(--bad);}
+
+.footnote{margin-top:22px; font-size:11.5px; color:var(--faint); text-align:center; line-height:1.6;}
+.footnote code{font-family:var(--mono); color:var(--muted);}
+
+/* ---------- QUIZ ---------- */
+.qtop{display:flex; align-items:center; gap:12px; margin:2px 0 14px;}
+.back{
+  width:38px; height:38px; border-radius:11px; flex:0 0 auto; display:grid; place-items:center;
+  border:1px solid var(--stroke); background:var(--panel); font-size:18px; color:var(--muted);
+}
+.progwrap{flex:1 1 auto;}
+.progmeta{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:6px;}
+.progmeta .streak{color:var(--gold);}
+.progbar{height:7px; border-radius:5px; background:var(--panel2); overflow:hidden; border:1px solid var(--stroke);}
+.progfill{height:100%; width:0; border-radius:5px; background:linear-gradient(90deg,var(--brand),var(--brand2)); transition:width .35s cubic-bezier(.4,0,.2,1);}
+
+.qcard{
+  background:var(--panel); border:1px solid var(--stroke); border-radius:var(--r);
+  padding:18px 16px 16px; margin-bottom:14px;
+}
+.qtopic{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--brand); margin-bottom:9px;}
+.qtext{font-size:17px; font-weight:600; line-height:1.35; letter-spacing:-.1px;}
+.qtext code{font-family:var(--mono); font-size:14px; background:rgba(139,123,255,.13); color:#c6bcff; padding:1px 6px; border-radius:6px;}
+
+.opts{display:flex; flex-direction:column; gap:9px; margin-top:2px;}
+.opt{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+  background:var(--panel); border:1.5px solid var(--stroke); border-radius:13px;
+  padding:13px 14px; min-height:56px; font-size:14.5px; line-height:1.3;
+  transition:transform .1s ease, border-color .12s ease, background .12s ease;
+}
+.opt:active{transform:scale(.985);}
+.opt .key{
+  flex:0 0 auto; width:28px; height:28px; border-radius:8px; display:grid; place-items:center;
+  font-family:var(--mono); font-weight:700; font-size:13px; color:var(--muted);
+  background:var(--panel2); border:1px solid var(--stroke);
+}
+.opt .txt{flex:1 1 auto;}
+.opt .mark{flex:0 0 auto; font-size:16px; width:18px; text-align:center; opacity:0;}
+.opt code{font-family:var(--mono); font-size:13px; background:var(--panel2); padding:1px 5px; border-radius:5px;}
+
+.opt.correct{border-color:var(--ok-line); background:var(--ok-bg);}
+.opt.correct .key{background:var(--ok); border-color:var(--ok); color:#08140f;}
+.opt.correct .mark{opacity:1; color:var(--ok);}
+.opt.wrong{border-color:var(--bad-line); background:var(--bad-bg);}
+.opt.wrong .key{background:var(--bad); border-color:var(--bad); color:#1a0709;}
+.opt.wrong .mark{opacity:1; color:var(--bad);}
+.opt.locked{pointer-events:none;}
+.opt.dim{opacity:.5;}
+
+.explain{
+  margin-top:12px; padding:12px 13px 12px 40px; position:relative;
+  border-radius:12px; font-size:13px; line-height:1.5;
+  background:rgba(139,123,255,.08); border:1px solid rgba(139,123,255,.2); color:#d3d0f0;
+  max-height:0; overflow:hidden; padding-top:0; padding-bottom:0; border-width:0;
+  transition:max-height .3s ease, padding .3s ease, border-width .1s ease;
+}
+.explain.show{max-height:220px; padding-top:12px; padding-bottom:12px; border-width:1px;}
+.explain::before{content:"i"; position:absolute; left:13px; top:12px; width:18px; height:18px; border-radius:50%; background:var(--brand); color:#fff; font-style:italic; font-weight:700; text-align:center; line-height:18px; font-size:12px; font-family:Georgia,serif;}
+.explain b{color:var(--brand);}
+
+.next{
+  width:100%; margin-top:14px; padding:15px; border-radius:14px; font-size:15px; font-weight:700;
+  color:#fff; background:linear-gradient(150deg,var(--brand),var(--brand2));
+  box-shadow:0 8px 22px rgba(91,140,255,.28); transition:transform .12s ease, opacity .2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.next:active{transform:scale(.98);}
+.next[disabled]{opacity:.35; box-shadow:none;}
+
+/* ---------- RESULTS ---------- */
+.report{background:var(--panel); border:1px solid var(--stroke); border-radius:var(--r); padding:20px 16px; margin-bottom:14px;}
+.report .head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
+.report .head .eyebrow{color:var(--muted);}
+.verdict{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.1em; padding:4px 9px; border-radius:7px;}
+.verdict.pass{color:var(--ok); background:var(--ok-bg); border:1px solid var(--ok-line);}
+.verdict.warn{color:var(--gold); background:rgba(242,193,78,.12); border:1px solid rgba(242,193,78,.4);}
+.verdict.fail{color:var(--bad); background:var(--bad-bg); border:1px solid var(--bad-line);}
+
+.ring-row{display:flex; align-items:center; gap:20px;}
+.ring{position:relative; width:118px; height:118px; flex:0 0 auto;}
+.ring svg{transform:rotate(-90deg);}
+.ring .pct{position:absolute; inset:0; display:grid; place-items:center; flex-direction:column;}
+.ring .pct b{font-family:var(--mono); font-size:30px; line-height:1; letter-spacing:-1px;}
+.ring .pct span{font-size:10px; color:var(--muted); margin-top:3px; letter-spacing:.05em;}
+.tally{flex:1 1 auto; display:flex; flex-direction:column; gap:9px;}
+.tline{display:flex; align-items:center; gap:9px; font-size:13px;}
+.tline .dot{width:9px; height:9px; border-radius:3px; flex:0 0 auto;}
+.tline .dot.ok{background:var(--ok);} .tline .dot.bad{background:var(--bad);} .tline .dot.gold{background:var(--gold);}
+.tline b{font-family:var(--mono); margin-left:auto; font-size:14px;}
+.tline span{color:var(--muted);}
+
+.tb-title{margin:6px 2px 10px; }
+.tbreak{display:flex; flex-direction:column; gap:9px; margin-bottom:6px;}
+.tb{background:var(--panel); border:1px solid var(--stroke); border-radius:12px; padding:11px 13px;}
+.tb .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; gap:10px;}
+.tb .row .nm{font-size:12.5px; font-weight:600; line-height:1.2;}
+.tb .row .sc{font-family:var(--mono); font-size:12px; color:var(--muted); flex:0 0 auto;}
+.tbar{height:6px; border-radius:4px; background:var(--panel2); overflow:hidden;}
+.tbar i{display:block; height:100%; border-radius:4px;}
+
+.review-title{margin:20px 2px 10px;}
+.rev{background:var(--panel); border:1px solid var(--stroke); border-left:3px solid var(--bad); border-radius:12px; padding:13px 14px; margin-bottom:9px;}
+.rev .q{font-size:13.5px; font-weight:600; line-height:1.35;}
+.rev .q code{font-family:var(--mono); font-size:12px; background:var(--panel2); padding:1px 5px; border-radius:5px;}
+.rev .ans{font-size:12.5px; margin-top:8px; display:flex; gap:7px; align-items:flex-start;}
+.rev .ans .lbl{font-family:var(--mono); font-size:10px; letter-spacing:.06em; color:var(--faint); flex:0 0 auto; margin-top:1px; text-transform:uppercase;}
+.rev .ans.right .val{color:var(--ok);} .rev .ans.mine .val{color:var(--bad);}
+.rev .ans code{font-family:var(--mono); font-size:11.5px; background:var(--panel2); padding:1px 4px; border-radius:4px;}
+
+.actions{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px;}
+.act{padding:14px; border-radius:14px; font-size:14px; font-weight:700; text-align:center; border:1px solid var(--stroke); background:var(--panel2); transition:transform .12s;}
+.act:active{transform:scale(.98);}
+.act.primary{border-color:transparent; color:#fff; background:linear-gradient(150deg,var(--brand),var(--brand2));}
+.act.full{grid-column:1 / -1;}
+
+@keyframes slidein{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+.anim{animation:slidein .28s ease both;}
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
+
+/* ---------- HOME SECTIONS ---------- */
+.divider{height:1px; background:var(--stroke); margin:26px 0 20px;}
+.exam-cta{
+  width:100%; display:flex; align-items:center; gap:13px; text-align:left; margin-bottom:12px;
+  padding:16px 15px; border-radius:15px; border:none; color:#fff;
+  background:linear-gradient(150deg,var(--brand),var(--brand2));
+  box-shadow:0 10px 26px rgba(91,140,255,.26); transition:transform .12s;
+}
+.exam-cta:active{transform:scale(.98);}
+.exam-cta .ic{width:40px; height:40px; border-radius:11px; flex:0 0 auto; display:grid; place-items:center; font-size:19px; background:rgba(255,255,255,.16);}
+.exam-cta .t{font-size:16px; font-weight:700; line-height:1.2;}
+.exam-cta .d{font-size:12px; color:rgba(255,255,255,.82); margin-top:2px;}
+
+.exam-list{display:flex; flex-direction:column; gap:8px;}
+.exam-item{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+  background:var(--panel); border:1px solid var(--stroke); border-radius:13px; padding:12px 13px;
+  transition:transform .12s, border-color .12s;
+}
+.exam-item:active{transform:scale(.985); border-color:var(--brand);}
+.exam-item .num{
+  flex:0 0 auto; min-width:38px; height:34px; padding:0 6px; border-radius:9px; display:grid; place-items:center;
+  font-family:var(--mono); font-weight:700; font-size:12px; color:var(--brand);
+  background:rgba(139,123,255,.12); border:1px solid rgba(139,123,255,.22);
+}
+.exam-item .body{flex:1 1 auto; min-width:0;}
+.exam-item .name{font-size:13.5px; font-weight:600; line-height:1.3;}
+.exam-item .meta{font-size:10.5px; color:var(--faint); font-family:var(--mono); margin-top:3px;}
+.exam-item .meta .ok{color:var(--ok);} .exam-item .meta .bad{color:var(--bad);}
+.exam-item .go{flex:0 0 auto; color:var(--faint); font-size:17px;}
+
+.toggle{
+  width:100%; margin-top:2px; padding:12px; border-radius:12px; border:1px dashed var(--stroke);
+  background:transparent; color:var(--muted); font-size:13px; font-weight:600;
+}
+.toggle:active{border-color:var(--brand);}
+
+/* ---------- THEORY ---------- */
+.th-top{display:flex; align-items:center; gap:12px; margin:2px 0 14px; position:sticky; top:0; z-index:5;
+  background:linear-gradient(180deg, var(--bg) 70%, rgba(14,15,22,0)); padding:6px 0 10px;}
+.th-top .ttl{flex:1 1 auto; min-width:0;}
+.th-top .ttl .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--brand);}
+.th-top .ttl .n{font-size:14px; font-weight:700; line-height:1.25; margin-top:2px;}
+
+.md{background:var(--panel); border:1px solid var(--stroke); border-radius:var(--r); padding:16px 15px; font-size:14.5px; line-height:1.6;}
+.md h3{font-size:15.5px; font-weight:700; color:#c9c1ff; margin:20px 0 8px; padding-left:11px; border-left:3px solid var(--brand); line-height:1.3;}
+.md h3:first-child{margin-top:0;}
+.md h4{font-size:14px; font-weight:700; color:#b9b1f5; margin:16px 0 6px;}
+.md p{margin:9px 0;}
+.md strong{color:#fff; font-weight:700;}
+.md ul,.md ol{margin:8px 0; padding-left:20px;}
+.md li{margin:4px 0;}
+.md li::marker{color:var(--brand);}
+.md hr{border:none; border-top:1px solid var(--stroke); margin:16px 0;}
+.md code{font-family:var(--mono); font-size:12.5px; background:rgba(139,123,255,.13); color:#c6bcff; padding:1px 5px; border-radius:5px; border:none;}
+.md blockquote{
+  margin:12px 0; padding:11px 12px 11px 38px; position:relative; border-radius:11px;
+  background:rgba(139,123,255,.08); border:1px solid rgba(139,123,255,.22); color:#d8d4f4; font-size:13.5px;
+}
+.md blockquote::before{content:"i"; position:absolute; left:12px; top:11px; width:17px; height:17px; border-radius:50%; background:var(--brand); color:#fff; font-family:Georgia,serif; font-style:italic; font-weight:700; text-align:center; line-height:17px; font-size:11px;}
+.md blockquote p{margin:3px 0;}
+.md blockquote strong{color:#cdc4ff;}
+
+.md .tblwrap{overflow-x:auto; margin:12px 0; -webkit-overflow-scrolling:touch;}
+.md table{border-collapse:collapse; width:100%; font-size:12.5px; min-width:340px;}
+.md th{background:var(--panel2); color:#cdc7f2; text-align:left; padding:8px 10px; font-weight:700; border:1px solid var(--stroke); white-space:nowrap;}
+.md td{padding:7px 10px; border:1px solid var(--stroke); vertical-align:top; color:var(--ink);}
+.md td:first-child{white-space:nowrap;}
+
+.md .code{margin:12px 0; border-radius:11px; overflow:hidden; border:1px solid #262b3d;}
+.md .code .bar{background:#1b1f2e; padding:6px 12px; display:flex; justify-content:space-between; align-items:center;}
+.md .code .bar .dots{width:38px; height:9px;
+  background:radial-gradient(circle 4.5px at 4.5px 4.5px,#ff5f56 98%,transparent),radial-gradient(circle 4.5px at 19px 4.5px,#ffbd2e 98%,transparent),radial-gradient(circle 4.5px at 33.5px 4.5px,#27c93f 98%,transparent);}
+.md .code .bar .lg{font-family:var(--mono); font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:#6f7690; font-weight:700;}
+.md .code pre{margin:0; padding:12px 13px; background:#1a1d2b; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.md .code code{font-family:var(--mono); font-size:11.5px; line-height:1.55; background:none; color:#abb2bf; padding:0; border:none; white-space:pre; display:block;}
+.md .code .str{color:#98c379;} .md .code .com{color:#5c6370; font-style:italic;}
+.md .code .kw{color:#c678dd;} .md .code .num{color:#d19a66;} .md .code .tag{color:#e06c75;}
+
+.th-actions{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px;}
+
+/* theory launched from quiz/results */
+.theory-btn{
+  width:100%; margin-top:10px; padding:12px; border-radius:12px; font-size:13.5px; font-weight:700;
+  border:1px solid var(--stroke); background:var(--panel2); color:var(--ink);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.theory-btn:active{transform:scale(.98); border-color:var(--brand);}
+.rev .revtheory{margin-top:9px; font-size:12px; font-family:var(--mono); color:var(--brand); background:none; padding:0;}
+
+
+/* ---------- выбор / отмена / выход ---------- */
+.back.wide{
+  width:auto; padding:0 13px; gap:4px; font-size:13px; font-weight:600; color:var(--muted);
+  display:flex; align-items:center; white-space:nowrap;
+}
+.back.wide:active{border-color:var(--bad); color:var(--bad);}
+
+.opt.sel{ border-color:var(--brand); background:rgba(139,123,255,.10); }
+.opt.sel .key{ background:var(--brand); border-color:var(--brand); color:#fff; }
+.opt.sel .mark{ opacity:1; color:var(--brand); }
+.opt.sel .mark::after{ content:"✓"; }
+
+.hint{
+  margin:10px 2px 0; font-size:11.5px; color:var(--faint); text-align:center; line-height:1.4;
+}
+.cancel{
+  width:100%; margin-top:9px; padding:12px; border-radius:12px; font-size:13.5px; font-weight:600;
+  border:1px solid var(--stroke); background:transparent; color:var(--muted);
+}
+.cancel:active{ transform:scale(.98); border-color:var(--bad); color:var(--bad); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="home">
+    <div class="brand">
+      <div class="logo">{ }</div>
+      <div>
+        <h1>Тренажёр теории</h1>
+        <p>Программирование · 1 курс</p>
+      </div>
+    </div>
+
+    <div class="statbar">
+      <div class="stat"><b class="accent" id="st-total">0</b><span>всего ответов</span></div>
+      <div class="stat"><b id="st-acc">—</b><span>средняя точность</span></div>
+      <div class="stat"><b class="gold" id="st-streak">0</b><span>рекорд серии</span></div>
+    </div>
+
+    <div class="sechead">
+      <div class="eyebrow">Экзаменационные вопросы</div>
+      <small id="exam-count"></small>
+    </div>
+
+    <button class="exam-cta" id="run-exam">
+      <span class="ic">✓</span>
+      <span>
+        <span class="t">Пройти экзамен</span>
+        <span class="d">все вопросы из твоего конспекта</span>
+      </span>
+    </button>
+
+    <div class="exam-list" id="exam-list"></div>
+
+    <div class="divider"></div>
+
+    <div class="sechead">
+      <div class="eyebrow">Дополнительный тренажёр</div>
+      <small id="drill-count"></small>
+    </div>
+    <div class="quick">
+      <button class="qbtn primary" data-mode="quick">
+        <div class="k">старт</div>
+        <div class="t">Быстрый тест</div>
+        <div class="d">15 случайных вопросов</div>
+      </button>
+      <button class="qbtn" data-mode="marathon">
+        <div class="k">все темы</div>
+        <div class="t">Марафон</div>
+        <div class="d">весь банк вопросов</div>
+      </button>
+    </div>
+    <button class="toggle" id="toggle-topics">Показать темы ↓</button>
+    <div class="topics hidden" id="topics" style="margin-top:10px"></div>
+
+    <div class="footnote">
+      Прогресс хранится на этом устройстве.<br>
+      Добавь на главный экран: <code>⋮ → Добавить на главный экран</code>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="hidden">
+    <div class="qtop">
+      <button class="back wide" id="quit">‹ Выйти</button>
+      <div class="progwrap">
+        <div class="progmeta">
+          <span id="counter">1 / 15</span>
+          <span class="streak" id="streak"></span>
+        </div>
+        <div class="progbar"><div class="progfill" id="fill"></div></div>
+      </div>
+    </div>
+
+    <div class="qcard" id="qcard">
+      <div class="qtopic" id="q-topic"></div>
+      <div class="qtext" id="q-text"></div>
+    </div>
+
+    <div class="opts" id="opts"></div>
+    <div class="hint" id="hint">Нажми на вариант, чтобы выбрать. Повторное нажатие снимает галочку.</div>
+    <div class="explain" id="explain"></div>
+    <button class="theory-btn hidden" id="q-theory">📖 Читать полную теорию</button>
+    <button class="next" id="next" disabled>Выбери вариант</button>
+    <button class="cancel hidden" id="cancel">Отменить выбор</button>
+  </section>
+
+  <!-- ============ THEORY ============ -->
+  <section id="theory" class="hidden">
+    <div class="th-top">
+      <button class="back" id="th-back">‹</button>
+      <div class="ttl">
+        <div class="k" id="th-num"></div>
+        <div class="n" id="th-title"></div>
+      </div>
+    </div>
+    <div class="md" id="th-body"></div>
+    <div class="th-actions">
+      <button class="act primary" id="th-test">Проверить себя</button>
+      <button class="act" id="th-home">К списку</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="hidden">
+    <div class="report">
+      <div class="head">
+        <div class="eyebrow">Отчёт о прогоне</div>
+        <div class="verdict" id="verdict">—</div>
+      </div>
+      <div class="ring-row">
+        <div class="ring">
+          <svg width="118" height="118">
+            <circle cx="59" cy="59" r="50" fill="none" stroke="#20243a" stroke-width="11"/>
+            <circle id="ring-fg" cx="59" cy="59" r="50" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"/>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8b7bff"/><stop offset="1" stop-color="#5b8cff"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="pct"><b id="r-pct">0%</b><span>точность</span></div>
+        </div>
+        <div class="tally">
+          <div class="tline"><span class="dot ok"></span><span>Правильно</span><b id="r-ok">0</b></div>
+          <div class="tline"><span class="dot bad"></span><span>Ошибок</span><b id="r-bad">0</b></div>
+          <div class="tline"><span class="dot gold"></span><span>Лучшая серия</span><b id="r-streak">0</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tb-wrap" class="hidden">
+      <div class="eyebrow tb-title" id="tb-label">Разбивка по темам</div>
+      <div class="tbreak" id="tbreak"></div>
+    </div>
+
+    <div id="rev-wrap" class="hidden">
+      <div class="eyebrow review-title">Разбор ошибок</div>
+      <div id="review"></div>
+    </div>
+
+    <div class="actions">
+      <button class="act primary full hidden" id="retry-wrong">Повторить ошибки</button>
+      <button class="act primary" id="again">Пройти заново</button>
+      <button class="act" id="tohome">На главную</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const EXAM = [{"n": "1", "title": "Паттерны программирования. Поведенческие, структурные, порождающие. Примеры Observer и Factory.", "prompt": "Что такое паттерны проектирования, на какие группы они делятся и что делают Observer и Factory?", "o": ["Готовые типовые решения часто встречающихся проблем проектирования, делающие код понятнее и гибче. Порождающие отвечают за создание объектов (Factory, Singleton, Builder), структурные собирают классы и объекты в более крупные структуры (Adapter, Bridge, Decorator), поведенческие описывают взаимодействие объектов и распределение обязанностей (Observer, Visitor, State). Observer реализует связь «один ко многим»: издатель хранит список подписчиков и при событии вызывает у каждого метод update(). Factory выносит создание объектов в отдельный класс-фабрику, и клиент получает нужный продукт по типу, не вдаваясь в детали создания.", "Готовые типовые решения часто встречающихся проблем проектирования, делающие код понятнее и гибче. Порождающие описывают взаимодействие объектов и распределение обязанностей, структурные отвечают за создание объектов, поведенческие собирают классы в более крупные структуры. Observer гарантирует, что у класса будет ровно один экземпляр на всю программу, и служит единой точкой доступа к нему. Factory обходит элементы коллекции и применяет к каждому переданную операцию, не меняя классы самих элементов. Оба паттерна относятся к структурной группе, поскольку определяют, как классы собираются в более крупные структуры и как между ними распределяются обязанности.", "Готовые типовые решения часто встречающихся проблем проектирования. Порождающие отвечают за создание объектов, структурные — за сборку классов в более крупные структуры, поведенческие — за взаимодействие объектов. Observer соединяет два несовместимых интерфейса: он оборачивает объект и предоставляет тот интерфейс, который ожидает клиент, не меняя исходный класс. Factory собирает сложный объект пошагово — методы возвращают self для цепочки вызовов, а build() отдаёт готовый результат вместо конструктора с десятком параметров. Обе задачи решаются на этапе выполнения программы, поэтому Observer и Factory принято относить к порождающей группе — они управляют созданием и жизненным циклом объектов.", "Готовые фрагменты кода из стандартной библиотеки, которые подключаются импортом и ускоряют разработку. Делятся на синхронные, асинхронные и параллельные — по способу выполнения в программе. Observer отслеживает расход памяти и запускает сборщик мусора, когда счётчик ссылок на объект падает до нуля. Factory кэширует ранее созданные объекты и возвращает их копии, чтобы не тратить время на повторное создание тяжёлых экземпляров. Обе задачи выполняются интерпретатором автоматически, поэтому явно писать классы Observer и Factory в коде не требуется — достаточно включить соответствующий флаг оптимизации."], "c": 0, "md": "### Что такое паттерны программирования?\n\n**Паттерны программирования (Design Patterns)** — это готовые типовые решения часто встречающихся проблем при проектировании программ. Их придумали не для того, чтобы усложнить код, а наоборот — чтобы сделать его понятнее, гибче и проще в поддержке. Представьте, что вы строите дом: вы можете каждый раз изобретать колесо, а можете использовать проверенные архитектурные решения. Паттерны — это и есть такие \"проверенные решения\" для кода.\n\nВсе паттерны делятся на три большие группы:\n\n**1. Порождающие (Creational)** — отвечают за создание объектов. Их главная цель — сделать так, чтобы система не зависела от того, как именно создаются объекты. Другими словами, вы говорите \"дайте мне объект\", а как его создавать — решает паттерн. Примеры: Factory (Фабрика), Singleton (Одиночка), Builder (Строитель).\n\n**2. Структурные (Structural)** — определяют, как классы и объекты собираются в более крупные структуры. Проще говоря, они помогают организовать отношения между классами. Примеры: Adapter (Адаптер), Bridge (Мост), Decorator (Декоратор).\n\n**3. Поведенческие (Behavioral)** — определяют, как объекты взаимодействуют друг с другом и распределяют обязанности. Примеры: Observer (Наблюдатель), Visitor (Посетитель), State (Состояние).\n\n---\n\n### Observer (Наблюдатель)\n\n**Зачем нужен:** Представьте себе ситуацию: у вас есть новостной канал и множество подписчиков. Когда выходит новая новость, канал должен уведомить всех подписчиков. При этом канал не знает заранее, сколько будет подписчиков — они могут приходить и уходить в любой момент. Паттерн Observer решает именно эту задачу: он создаёт механизм \"один ко многим\", где один объект (издатель) автоматически уведомляет всех зависимых от него объектов (подписчиков) о любых изменениях своего состояния.\n\n**Как это работает:**\n1. Издатель (Subject) хранит список подписчиков\n2. Подписчики регистрируются через метод `attach`\n3. При событии издатель вызывает `notify` — проходит по всем подписчикам и вызывает их метод `update`\n\n```python\nclass Dispatcher:                          # диспетчер — издатель, оповещает подстанции\n    def __init__(self):\n        self._subs = []                    # список подписанных подстанций\n    def attach(self, s):                   # подписать подстанцию\n        self._subs.append(s)\n    def notify(self, msg):                 # оповестить все подстанции\n        for s in self._subs:\n            s.update(msg)                  # каждая получает сообщение\n\nclass Substation:                          # подстанция — наблюдатель\n    def update(self, msg):\n        print(f\"ПС: {msg}\")                # реакция на событие\n\nd = Dispatcher()\nd.attach(Substation())\nd.attach(Substation())\nd.notify(\"Авария на ЛЭП-110 кВ!\")\n# Вывод: ПС: Авария на ЛЭП-110 кВ! (дважды)\n```\n\n---\n\n### Factory (Фабрика)\n\n**Зачем нужен:** Допустим, вы пишете программу для логистической компании. У вас есть разные виды транспорта: грузовики, корабли, самолёты. Вам нужно создавать нужный транспорт в зависимости от ситуации. Если просто писать везде `if тип == \"море\": создать корабль` — код станет запутанным и его будет трудно расширять. Паттерн Factory решает эту проблему: он выносит логику создания объектов в отдельный класс (фабрику), и клиентский код просто говорит \"дай мне транспорт для моря\", не вдаваясь в детали создания.\n\n**Как это работает:**\n1. Есть базовый класс продукта (Transport) с общим методом\n2. Есть конкретные продукты (Truck, Ship), реализующие этот метод по-своему\n3. Фабрика (Factory) принимает тип и создаёт нужный продукт\n\n```python\nclass PowerPlant:                           # базовый класс \"электростанция\"\n    def generate(self): pass                # общий метод, заглушка\n\nclass TPP(PowerPlant):                      # ТЭС — тепловая\n    def generate(self):\n        return \"ТЭС: сжигаем газ\"\n\nclass HPP(PowerPlant):                      # ГЭС — гидро\n    def generate(self):\n        return \"ГЭС: крутим турбину\"\n\nclass WPP(PowerPlant):                      # ВЭС — ветряная\n    def generate(self):\n        return \"ВЭС: ловим ветер\"\n\nclass PlantFactory:                         # фабрика — создаёт тип по строке\n    @staticmethod\n    def create(ptype):\n        if ptype == \"thermal\": return TPP()\n        if ptype == \"hydro\": return HPP()\n        if ptype == \"wind\": return WPP()\n\np = PlantFactory.create(\"wind\")\nprint(p.generate())                         # ВЭС: ловим ветер\n```"}, {"n": "2", "title": "Паттерны Singleton и Builder.", "prompt": "Для чего нужны паттерны Singleton и Builder и как они устроены?", "o": ["Singleton гарантирует ровно один экземпляр класса на всю программу: в классе хранится переменная _instance, и при создании через __new__ проверяется, существует ли объект — если да, возвращается существующий. Нужен для подключения к БД или единых настроек приложения. Builder решает проблему «конструктора ада», когда у объекта много параметров: он собирает объект пошагово, каждый метод устанавливает одно поле и возвращает self для цепочки вызовов, а build() отдаёт готовый объект.", "Singleton решает проблему «конструктора ада»: вместо конструктора с десятком параметров он собирает объект пошагово, каждый метод задаёт одно поле, а build() возвращает готовый результат. Builder гарантирует единственный экземпляр класса на программу: он хранит переменную _instance и при повторном создании возвращает уже существующий объект. Оба относятся к порождающим паттернам, поскольку управляют процессом создания объектов. Singleton применяют, когда объект нужно собирать частями, а Builder — когда объект должен быть только один, например при работе с общим подключением к базе данных.", "Singleton хранит список зависимых объектов и при изменении своего состояния оповещает их всех, вызывая метод update() у каждого. Нужен там, где на одно событие должны реагировать много подписчиков. Builder принимает объект с неподходящим интерфейсом и оборачивает его, предоставляя тот интерфейс, который ожидает клиентский код, — так старый класс удаётся использовать в новой системе, не меняя его. Singleton нужен там, где на одно событие реагируют многие, а Builder — там, где старый класс требуется встроить в новую систему без изменения его исходного кода.", "Singleton создаёт новый экземпляр класса при каждом обращении, но переиспользует уже выделенную под объект память, что заметно ускоряет работу программы. Builder разделяет иерархию классов на две независимые части — абстракцию и реализацию — и соединяет их композицией, чтобы не создавать отдельный класс на каждое сочетание и не плодить лишние классы. Singleton экономит память за счёт повторного использования уже выделенных участков, а Builder экономит классы за счёт композиции вместо наследования при большом числе сочетаний."], "c": 0, "md": "### Singleton (Одиночка)\n\n**Зачем нужен:** Бывают ситуации, когда у класса должен быть ровно один экземпляр на всю программу. Например, соединение с базой данных: если вы откроете 10 подключений туда-сюда, это будет неэффективно. Или настройки приложения — они должны быть едины для всей программы. Singleton гарантирует, что сколько бы раз вы ни пытались создать объект этого класса, вы всегда будете получать один и тот же экземпляр.\n\n**Как это работает:**\n1. В классе хранится статическая переменная `_instance`\n2. При создании объекта проверяем, существует ли уже экземпляр\n3. Если нет — создаём, если да — возвращаем существующий\n\n```python\nclass DispatchCenter:                       # единый диспетчерский центр\n    _instance = None                        # хранит единственный экземпляр\n    def __new__(cls):\n        if cls._instance is None:\n            cls._instance = super().__new__(cls)\n        return cls._instance\n\ndc1 = DispatchCenter()\ndc2 = DispatchCenter()\nprint(dc1 is dc2)                           # True — один объект на всю сеть\n```\n\n---\n\n### Builder (Строитель)\n\n**Зачем нужен:** Представьте, что вам нужно создать объект пиццы. У пиццы может быть много параметров: размер, сыр, пепперони, грибы и т.д. Если создавать такую пиццу через конструктор с 10 параметрами, получится \"конструктор ада\": `Pizza(\"large\", True, True, False, True, ...)` — совершенно непонятно, что где. Builder решает эту проблему: он позволяет собирать объект пошагово, вызывая методы, названия которых говорят сами за себя.\n\n**Как это работает:**\n1. Методы строителя возвращают `self` — это позволяет делать цепочки вызовов\n2. Каждый метод устанавливает одно поле\n3. Метод `build()` возвращает готовый объект\n\n```python\nclass EnergyReport:                         # отчёт о потреблении\n    def __init__(self):\n        self.region = None                  # регион\n        self.mwh = None                     # МВт·ч\n        self.peak = None                    # пиковая нагрузка\n\nclass ReportBuilder:                        # строитель — заполняет поля по одному\n    def __init__(self):\n        self.r = EnergyReport()\n    def set_region(self, reg):\n        self.r.region = reg; return self    # return self для цепочки\n    def set_mwh(self, mwh):\n        self.r.mwh = mwh; return self\n    def set_peak(self, peak):\n        self.r.peak = peak; return self\n    def build(self):\n        return self.r                       # готовый отчёт\n\nr = ReportBuilder().set_region(\"Сибирь\").set_mwh(5000).set_peak(1200).build()\nprint(f\"{r.region}: {r.mwh} МВт·ч, пик {r.peak} МВт\")\n# Вывод: Сибирь: 5000 МВт·ч, пик 1200 МВт\n```"}, {"n": "3", "title": "Паттерны Visitor и State.", "prompt": "Что делают паттерны Visitor и State?", "o": ["Visitor выносит операции над объектами в отдельный класс-посетитель: у каждого объекта есть метод accept(visitor), который вызывает соответствующий метод посетителя, а у посетителя — отдельный метод на каждый тип объекта. Новая операция = новый посетитель, классы самих объектов не меняются. State выносит поведение каждого состояния в отдельный класс вместо огромных if: контекст хранит текущее состояние и делегирует ему работу, а состояние может переключить контекст в другое состояние.", "Visitor хранит текущее состояние объекта и делегирует ему работу, а само состояние может переключить объект в следующее — так убираются громоздкие проверки через if. State выносит все операции над объектами в отдельный класс: у объектов есть метод accept(), вызывающий нужный метод у переданного обработчика, поэтому новая операция добавляется без правки классов самих объектов. Оба паттерна относятся к структурной группе: они не меняют поведение объектов, а лишь описывают, как классы собираются в более крупные структуры и как между ними распределяются связи и обязанности.", "Visitor создаёт объекты нужного типа по переданной строке, скрывая от клиента детали создания и избавляя код от длинных цепочек условий. State гарантирует, что объект будет существовать в единственном экземпляре: в классе хранится ссылка на созданный экземпляр, и при повторном создании возвращается он же, а не новый объект. Оба паттерна относятся к порождающим: Visitor управляет созданием объектов по типу, а State управляет количеством экземпляров, гарантируя, что объект в программе будет ровно один.", "Visitor соединяет два несовместимых интерфейса, оборачивая исходный объект и предоставляя тот интерфейс, который ожидает клиент. State собирает сложный объект по шагам: каждый метод задаёт одно поле и возвращает self, что позволяет выстраивать цепочку вызовов и получить готовый объект методом build() в конце. Оба паттерна относятся к структурным: Visitor обеспечивает совместимость интерфейсов, а State избавляет от конструктора с большим числом параметров, собирая объект по шагам методом за методом."], "c": 0, "md": "### Visitor (Посетитель)\n\n**Зачем нужен:** Допустим, у вас есть набор разных фигур: круги, квадраты, треугольники. Вам нужно уметь рисовать каждую фигуру, вычислять её площадь, сохранять в файл и т.д. Если добавлять каждый новый метод в классы фигур, они быстро раздуются. Паттерн Visitor выносит все операции над фигурами в отдельный класс-посетитель. Теперь, если нужна новая операция, вы просто создаёте нового посетителя, не трогая код фигур.\n\n**Как это работает:**\n1. Каждая фигура имеет метод `accept(visitor)`, который вызывает соответствующий метод посетителя\n2. Посетитель имеет отдельный метод для каждого типа фигур\n\n```python\nclass PowerLine:                            # ЛЭП\n    def accept(self, v):\n        v.visit_line(self)                  # вызывает метод для ЛЭП\n\nclass Substation:                           # подстанция\n    def accept(self, v):\n        v.visit_substation(self)            # вызывает метод для подстанции\n\nclass SafetyInspector:                      # инспектор — посетитель\n    def visit_line(self, l):\n        print(\"ЛЭП: изоляция ОК\")\n    def visit_substation(self, s):\n        print(\"ПС: заземление ОК\")\n\nfor obj in [PowerLine(), Substation()]:\n    obj.accept(SafetyInspector())\n# Вывод: ЛЭП: изоляция ОК  /  ПС: заземление ОК\n```\n\n---\n\n### State (Состояние)\n\n**Зачем нужен:** Представьте себе документ, который может находиться в разных состояниях: черновик, отправлен на проверку, утверждён, опубликован. В каждом состоянии документ ведёт себя по-разному. Вместо того чтобы писать огромные `if`-ы, паттерн State выносит поведение каждого состояния в отдельный класс.\n\n**Как это работает:**\n1. Базовый класс состояния с общим методом\n2. Конкретные состояния реализуют поведение по-своему\n3. Контекст хранит текущее состояние и делегирует ему работу\n4. Состояние может переключить контекст в другое состояние\n\n```python\nclass Running:                              # состояние \"в работе\"\n    def handle(self, ctx):\n        print(\"Работа → Останов\")\n        ctx.state = Stopped()               # переключить в \"останов\"\n\nclass Stopped:                              # состояние \"остановлен\"\n    def handle(self, ctx):\n        print(\"Останов → Работа\")\n        ctx.state = Running()               # переключить в \"работа\"\n\nclass PowerUnit:                            # энергоблок — хранит текущее состояние\n    def __init__(self):\n        self.state = Running()\n    def request(self):                      # делегирует текущему состоянию\n        self.state.handle(self)\n\nunit = PowerUnit()\nunit.request()                              # Работа → Останов\nunit.request()                              # Останов → Работа\n```"}, {"n": "4", "title": "Паттерны Bridge и Adapter.", "prompt": "В чём суть паттернов Bridge и Adapter и чем они отличаются?", "o": ["Bridge разделяет одну иерархию на две независимые (например, «пульты» и «устройства») и соединяет их композицией: пульт получает устройство через конструктор и работает с ним через общий интерфейс, поэтому не приходится плодить класс на каждое сочетание. Adapter — «переходник»: он принимает объект с неподходящим интерфейсом и предоставляет тот, который ожидает клиент, не меняя исходный класс. Bridge закладывают при проектировании, Adapter применяют постфактум к существующему коду.", "Bridge — «переходник»: он оборачивает объект с неподходящим интерфейсом и предоставляет тот, который ожидает клиентский код, поэтому старый класс не приходится менять. Adapter, наоборот, заранее разделяет иерархию на абстракцию и реализацию и связывает их наследованием, чтобы избежать комбинаторного взрыва числа классов. Adapter применяют при проектировании, а Bridge — к уже готовому коду. Bridge применяют к уже написанному коду, когда нужно встроить чужой класс, а Adapter закладывают заранее, чтобы иерархия не разрослась. Оба относятся к поведенческим паттернам, так как описывают взаимодействие объектов.", "Bridge хранит список подписчиков и при изменении состояния рассылает им уведомления, обеспечивая связь «один ко многим» между издателем и наблюдателями. Adapter выносит логику создания объектов в отдельный класс, который по переданному типу возвращает нужный продукт, избавляя клиентский код от условий и деталей создания объектов. Bridge применяют там, где на одно событие реагируют многие подписчики, а Adapter — там, где нужно скрыть детали создания объектов. Оба относятся к порождающим паттернам, поскольку управляют созданием объектов в системе.", "Bridge собирает сложный объект пошагово, чтобы избежать конструктора с большим числом параметров: методы возвращают self, а build() отдаёт готовый объект. Adapter гарантирует единственный экземпляр класса на всю программу и служит единой точкой доступа к общему ресурсу, например к подключению к базе данных или к настройкам. Bridge применяют, чтобы избежать конструктора с десятком параметров, а Adapter — чтобы гарантировать единственный экземпляр общего ресурса. Оба относятся к порождающим паттернам и управляют созданием объектов."], "c": 0, "md": "### Bridge (Мост)\n\n**Зачем нужен:** Представьте, что вы делаете пульты дистанционного управления для разных устройств: телевизоров, радио, проекторов. Если для каждого сочетания (телевизор + простой пульт, телевизор + голосовой пульт, радио + простой пульт и т.д.) создавать отдельный класс — количество классов взорвётся. Bridge разделяет иерархию на две независимые: \"пульты\" и \"устройства\", и соединяет их через мост (композицию).\n\n**Как это работает:**\n1. Создаётся общий интерфейс для всех устройств\n2. Пульт получает устройство через конструктор и работает с ним через общий интерфейс\n3. Пульт не привязан к конкретному устройству\n\n```python\nclass SolarPanel:                           # солнечная панель\n    def on(self): print(\"Солнечная: включена\")\n    def off(self): print(\"Солнечная: отключена\")\n\nclass DieselGen:                            # дизель-генератор\n    def on(self): print(\"Дизель: запущен\")\n    def off(self): print(\"Дизель: заглушен\")\n\nclass Controller:                           # контроллер — мост для любого генератора\n    def __init__(self, gen):\n        self.gen = gen                      # сохраняет генератор\n    def set(self, state):\n        self.gen.on() if state else self.gen.off()\n\nController(SolarPanel()).set(True)          # Солнечная: включена\nController(DieselGen()).set(False)          # Дизель: заглушен\n```\n\n---\n\n### Adapter (Адаптер)\n\n**Зачем нужен:** Вы когда-нибудь пользовались переходником с USB-C на HDMI? Adapter — это тот же самый переходник, только в программировании. Он позволяет соединить два несовместимых интерфейса. Например, у вас есть старый класс EuropeanSocket (напряжение 230В) и вы хотите использовать его в американской системе (ожидается 110В). Вместо того чтобы менять старый класс, вы создаёте адаптер.\n\n**Как это работает:**\n1. Есть класс с неподходящим интерфейсом (230В)\n2. Создаётся класс-адаптер, который принимает старый объект\n3. Адаптер предоставляет нужный интерфейс (110В)\n\n```python\nclass HVLine:                               # ЛЭП 500 кВ\n    def voltage(self): return 500\n\nclass Adapter110:                           # адаптер 500→110 кВ\n    def __init__(self, line):\n        self.line = line\n    def voltage(self):\n        return 110                          # выдача 110 кВ\n\nline = HVLine()\nadapter = Adapter110(line)\nprint(f\"{adapter.voltage()} кВ\")            # 110 кВ — HVLine не тронули\n```"}, {"n": "5", "title": "SOLID: Single Responsibility, Open/Closed, Liskov Substitution.", "prompt": "Как формулируются принципы SOLID: Single Responsibility, Open/Closed и Liskov Substitution?", "o": ["SRP: у каждого класса должна быть ровно одна причина для изменения — класс делает одну вещь, но делает её хорошо; если класс и формирует отчёт, и шлёт его по почте, и сохраняет в файл — это три разные ответственности. OCP: классы открыты для расширения (новое поведение добавляется новыми классами), но закрыты для изменения существующего кода. LSP: объекты дочерних классов должны быть взаимозаменяемы с объектами родительского без нарушения работы программы — если подкласс бросает исключение там, где базовый обещает работу, наследование спроектировано неверно.", "SRP: класс не должен зависеть от методов интерфейса, которые он не использует, поэтому лучше несколько маленьких интерфейсов, чем один большой универсальный. OCP: классы открыты для изменения существующего кода, но закрыты для расширения новыми классами, чтобы иерархия не разрасталась бесконтрольно. LSP: модули верхнего уровня не должны зависеть от модулей нижнего уровня — оба зависят от абстракций, а конкретная реализация подставляется извне. На практике это означает, что классы наследуют от базовых как можно реже, а зависимости внедряются через конструктор, чтобы модуль можно было протестировать с подставной реализацией вместо настоящей.", "SRP: у каждого класса должна быть одна причина для изменения — одна ответственность, и класс не должен делать всё сразу. OCP: любой класс можно расширить, но только через изменение его исходного кода, поэтому старые классы регулярно переписывают под новые требования. LSP: дочерний класс обязан переопределить все методы родителя, иначе подстановка невозможна и полиморфизм не сработает при вызове через базовый тип. На практике это означает, что при появлении нового требования базовый класс переписывают, а все наследники приводят в соответствие, чтобы иерархия оставалась согласованной и подстановка работала.", "SRP: файл должен содержать ровно один класс, а класс — не более десяти методов, иначе его следует разбить на части. OCP: интерфейс класса открыт для клиентов, но его поля закрыты и доступны только через геттеры и сеттеры. LSP: наследование использовать нельзя вовсе — вместо него применяют композицию, потому что подстановка подклассов всегда ломает логику работы программы. На практике это означает, что размер класса и число его методов ограничивают жёстко, а доступ к полям закрывают, потому что именно это делает код расширяемым и безопасным при подстановке подклассов."], "c": 0, "md": "### Что такое SOLID?\n\n**SOLID** — это аббревиатура пяти принципов объектно-ориентированного программирования, которые помогают создавать код, который легко поддерживать, расширять и тестировать. Если вы будете соблюдать эти принципы, ваш код будет меньше ломаться при изменениях и его будет проще читать.\n\n---\n\n### 1. Single Responsibility Principle (Принцип единственной ответственности)\n\n**Формулировка:** У каждого класса должна быть ровно одна причина для изменения. Класс должен делать только одну вещь, но делать её хорошо.\n\n**Простыми словами:** Не нужно заставлять один класс делать всё на свете. Если класс и генерирует отчёт, и отправляет его по email, и сохраняет в файл — это три разных ответственности. Если изменится формат email, придётся менять класс отчёта, хотя отчёт как таковой не менялся.\n\n**Плохо (нарушение):**\n```python\nclass SmartMeter:                           # нарушение SRP: и читает, и сохраняет\n    def read(self): return 1234\n    def save(self): pass                    # две причины для изменения!\n\n# Исправление: разделяем ответственность\nclass MeterReader:                          # только читает\n    def read(self): return 1234\nclass MeterSaver:                           # только сохраняет\n    def save(self, val):\n        print(f\"Сохранено: {val} кВт·ч\")\n\nMeterSaver().save(MeterReader().read())     # Сохранено: 1234 кВт·ч\n```\n\n---\n\n### 2. Open/Closed Principle (Принцип открытости/закрытости)\n\n**Формулировка:** Классы должны быть открыты для расширения (можно добавлять новое поведение), но закрыты для изменения (нельзя менять существующий код).\n\n**Простыми словами:** Вы должны иметь возможность добавить новую функциональность, создавая новые классы, а не переписывая старые.\n\n**Хорошо:**\n```python\nclass PowerPlant:                           # базовый класс — закрыт для изменения\n    def output(self): pass\n\nclass SolarPlant(PowerPlant):               # новый тип = новый класс (расширение)\n    def __init__(self, kw): self.kw = kw\n    def output(self): return self.kw * 0.15\n\nclass WindPlant(PowerPlant):\n    def __init__(self, kw): self.kw = kw\n    def output(self): return self.kw * 0.35\n\nfor p in [SolarPlant(200), WindPlant(100)]:\n    print(f\"{p.output()} МВт\")              # 30.0 / 35.0 — Plant не меняли\n```\n\n---\n\n### 3. Liskov Substitution Principle (Принцип подстановки Лисков)\n\n**Формулировка:** Объекты дочерних классов должны быть взаимозаменяемы с объектами родительского класса без нарушения работы программы.\n\n**Простыми словами:** Если функция принимает \"Птицу\", то вы должны иметь возможность передать туда \"Пингвина\", и всё должно работать. Если пингвин не летает — наследование спроектировано неправильно.\n\n**Плохо (нарушение LSP):**\n```python\nclass PowerPlant:\n    def start(self): pass\n\nclass SolarPlant(PowerPlant):\n    def start(self):\n        raise Exception(\"Солнце не включишь!\")  # ломает логику!\n```\n\n**Хорошо (по LSP):**\n```python\nclass PowerPlant: pass                      # просто станция, без start\n\nclass Dispatchable(PowerPlant):             # управляемая — можно запустить\n    def start(self): pass\nclass SolarPlant(PowerPlant):\n    def power(self): return 50\nclass GasPlant(Dispatchable):\n    def start(self): print(\"ГТУ запущена\")\n\nfor p in [SolarPlant(), GasPlant()]:\n    if hasattr(p, 'start'):                 # проверяем наличие метода\n        p.start()                           # ГТУ запущена\n```"}, {"n": "6", "title": "SOLID: Interface Segregation, Dependency Inversion.", "prompt": "Как формулируются принципы Interface Segregation и Dependency Inversion?", "o": ["ISP: клиенты не должны зависеть от интерфейсов, которые они не используют — лучше несколько маленьких специализированных интерфейсов, чем один большой универсальный; нельзя заставлять класс реализовывать ненужные ему методы (завод потребляет энергию, но не хранит её). DIP: модули верхнего уровня не должны зависеть от модулей нижнего уровня — оба зависят от абстракций; абстракции не зависят от деталей, детали зависят от абстракций. Класс работает с абстрактным интерфейсом, а конкретная реализация подставляется извне.", "ISP: маленькие интерфейсы следует объединять в один универсальный, чтобы не дублировать объявления методов и упростить поддержку — каждый класс реализует такой интерфейс целиком. DIP: модули верхнего уровня должны напрямую создавать нужные объекты нижнего уровня внутри себя, чтобы зависимость была явной и видимой прямо в коде класса, а не пряталась за абстракцией. На практике это означает, что интерфейсы стараются делать как можно шире, а зависимости создавать прямо внутри класса — так связи между модулями видны сразу и не приходится настраивать внедрение зависимостей.", "ISP: у каждого класса должна быть ровно одна причина для изменения, поэтому интерфейс описывает единственную ответственность и не растёт со временем. DIP: классы должны быть открыты для расширения новыми наследниками, но закрыты для изменения существующего кода — новая функциональность добавляется подклассами, а базовый класс не трогают. На практике это означает, что ответственность класса сужают до одной причины изменения, а новую функциональность добавляют наследниками, не трогая базовый класс, — именно это и составляет суть двух принципов.", "ISP: интерфейс должен описывать только данные объекта без методов, а всё поведение выносится в свободные функции модуля. DIP: все зависимости класса передаются через глобальные переменные, что позволяет менять реализацию без правки конструкторов и делает код независимым от конкретных классов нижнего уровня. На практике это означает, что поведение выносят из классов в свободные функции, а связи между модулями описывают на уровне модуля целиком, что упрощает подмену реализации без правки конструкторов классов."], "c": 0, "md": "### 4. Interface Segregation Principle (Принцип разделения интерфейсов)\n\n**Формулировка:** Клиенты не должны зависеть от интерфейсов, которые они не используют. Лучше иметь несколько маленьких специализированных интерфейсов, чем один большой и универсальный.\n\n**Простыми словами:** Не заставляйте классы реализовывать методы, которые им не нужны.\n\n**Плохо (нарушение):**\n```python\nclass EnergyDevice:                         # нарушение ISP: один интерфейс для всего\n    def consume(self): pass\n    def store(self): pass\n\nclass Factory(EnergyDevice):\n    def consume(self): return \"Завод: 100 МВт\"\n    def store(self): raise Exception(\"Не храним!\")  # вынужден!\n\n# Исправление: два маленьких интерфейса\nclass Consumer:\n    def consume(self): pass\nclass Storage:\n    def store(self): pass\n\nclass Factory(Consumer):                    # только потребляет\n    def consume(self): return \"Завод: 100 МВт\"\nclass Battery(Consumer, Storage):           # может и то, и другое\n    def consume(self): return \"Накопитель: заряд\"\n    def store(self): return \"Накопитель: запасён\"\n\nprint(Factory().consume())                  # Завод: 100 МВт\nprint(Battery().store())                    # Накопитель: запасён\n```\n\n---\n\n### 5. Dependency Inversion Principle (Принцип инверсии зависимостей)\n\n**Формулировка:** Модули верхнего уровня не должны зависеть от модулей нижнего уровня. Оба должны зависеть от абстракций. Абстракции не должны зависеть от деталей — детали должны зависеть от абстракций.\n\n**Простыми словами:** Программа не должна зависеть от конкретной базы данных (MySQL, PostgreSQL). Вместо этого она зависит от абстрактной \"Базы данных\", а конкретная реализация подставляется извне.\n\n**Плохо (нарушение):**\n```python\nclass App:\n    def __init__(self):\n        self.db = MySQLDatabase()        # жёсткая привязка к MySQL!\n```\n\n**Хорошо (исправление):**\n```python\nfrom abc import ABC, abstractmethod\n\nclass Meter(ABC):                           # абстрактный счётчик (интерфейс)\n    @abstractmethod\n    def read(self): pass\n\nclass OldMeter(Meter):                      # старая модель\n    def read(self): return 150\nclass SmartMeter(Meter):                    # умная модель\n    def read(self): return 160\n\nclass Monitor:                              # зависит от абстракции Meter, а не от конкретных\n    def __init__(self, m: Meter):\n        self.m = m\n    def show(self):\n        print(f\"{self.m.read()} кВт·ч\")\n\nMonitor(OldMeter()).show()                  # 150 кВт·ч\nMonitor(SmartMeter()).show()                # 160 кВт·ч — Monitor не меняли\n```"}, {"n": "7", "title": "API. REST и SOAP. Команды POST, PUT, DELETE, GET.", "prompt": "Что такое API, чем REST отличается от SOAP и за что отвечают GET, POST, PUT, DELETE?", "o": ["API — программный интерфейс, позволяющий приложениям обмениваться данными и вызывать функции друг друга, скрывая внутреннюю сложность системы. REST — архитектурный стиль поверх HTTP: всё считается ресурсом со своим URL (эндпоинтом), сервер не хранит состояние клиента (stateless), данные обычно передаются в JSON. SOAP — протокол обмена сообщениями на основе XML со строгой спецификацией WSDL и WS-Security, более «тяжёлый», часто применяется в банковских системах. GET — чтение (200 OK), POST — создание (201 Created), PUT — полная замена ресурса, DELETE — удаление (200 OK / 204 No Content).", "API — программный интерфейс для обмена данными между приложениями. REST — протокол обмена сообщениями на основе XML со строгой спецификацией WSDL и встроенной безопасностью на уровне протокола. SOAP — архитектурный стиль поверх HTTP, где каждый ресурс имеет свой URL, данные передаются в JSON, а сервер не хранит состояние клиента между запросами. GET — создание ресурса (201 Created), POST — чтение данных, PUT — удаление, DELETE — частичное обновление ресурса. Эндпоинт — это метод HTTP, применяемый к ресурсу, а сами ресурсы описываются в схеме WSDL, обязательной для обоих подходов.", "API — программный интерфейс, скрывающий внутреннюю сложность системы за простыми командами. REST — архитектурный стиль поверх HTTP, где каждый ресурс имеет свой эндпоинт, но сервер обязательно хранит состояние клиента между запросами (stateful), иначе сессия будет потеряна. SOAP использует JSON и не требует описания схемы. GET — чтение данных, POST — полная замена ресурса, PUT — создание нового, DELETE — удаление (204 No Content). Эндпоинт — это тело запроса, в котором передаются данные, а адрес ресурса определяется автоматически по типу передаваемого объекта.", "API — это база данных приложения, к которой клиенты обращаются напрямую по сети через драйвер. REST и SOAP — два формата сериализации данных, отличающиеся размером сообщения: REST компактнее, SOAP подробнее и содержит больше служебных полей. Все четыре метода (GET, POST, PUT, DELETE) выполняют одинаковые операции чтения и записи и различаются лишь тем, где передаются параметры — в строке запроса или в теле. Эндпоинт — это код ответа сервера, сообщающий об успехе или ошибке, а адрес ресурса передаётся отдельным заголовком запроса."], "c": 0, "md": "### Что такое API?\n\n>**API (Application Programming Interface)** — программный интерфейс, который позволяет разным приложениям обмениваться данными и вызывать функции друг друга.\n \nЕсли объяснять на жизненном примере: официант — это API между вами и кухней. Вы говорите официанту, что хотите заказать, он передаёт это на кухню, а потом приносит вам готовое блюдо. Вы не знаете, как именно готовится еда — вас это не касается. Точно так же API скрывает внутреннюю сложность системы и предоставляет простые \"команды\" для взаимодействия.\n\n### REST API (Representational State Transfer)\n\n**REST** — архитектурный стиль взаимодействия клиент-серверных приложений через HTTP. Особенности:\n- Всё считается ресурсом: пользователь, книга, заказ — это ресурсы\n- Каждый ресурс имеет свой URL (адрес) — эндпоинт\n- Взаимодействие происходит через HTTP-методы (GET, POST, PUT, DELETE)\n- Сервер не хранит информацию о состоянии клиента (stateless — каждый запрос независим)\n- Данные обычно передаются в формате JSON\n\nПолучение инфы о пользователе:\n```http\nGET /users/1\n```\nОтвет:\n```JSON\n{\n  \"id\": 1,\n  \"name\": \"Ivan\"\n}\n```\n### SOAP API (Simple Object Access Protocol)\n\n**SOAP** — протокол обмена сообщениями между приложениями на основе XML.\n- Использует XML для обмена данными\n- Имеет строгую спецификацию (WSDL — Web Services Description Language)\n- Поддерживает транзакции и безопасность на уровне протокола (WS-Security)\n- Более \"тяжёлый\" — сообщения содержат много служебной информации\n- Часто используется в банковских и корпоративных системах\n```XML\n<soap:Envelope>\n    <soap:Body>\n        <GetUser>\n            <Id>1</Id>\n        </GetUser>\n    </soap:Body>\n</soap:Envelope>\n```\n\n### HTTP-команды (методы)\n\nЭти методы соответствуют основным операциям работы с данными: CRUD (Create, Read, Update, Delete).\n\n| Метод      | Действие   | Что происходит                      | Успешный ответ          |\n| ---------- | ---------- | ----------------------------------- | ----------------------- |\n| **GET**    | Чтение     | Запрос данных без изменений         | 200 OK                  |\n| **POST**   | Создание   | Создание нового ресурса             | 201 Created             |\n| **PUT**    | Обновление | Полная замена существующего ресурса | 200 OK                  |\n| **DELETE** | Удаление   | Удаление ресурса                    | 200 OK / 204 No Content |\n\n### Примеры эндпоинтов (адресов API):\n**Эндпоинт (Endpoint)** — это URL-адрес ресурса API, по которому клиент отправляет запросы к серверу.\n\n```text\nGET    /api/substations       — получить СПИСОК всех подстанций\nGET    /api/substations/5     — получить инфу о подстанции с id = 5\nPOST   /api/substations       — СОЗДАТЬ подстанцию (данные в body)\nPUT    /api/substations/5     — ОБНОВИТЬ данные подстанции 5\nDELETE /api/substations/5     — УДАЛИТЬ подстанцию с идентификатором 5\n```"}, {"n": "8, 9, 10", "title": "Определение JSON, YAML, XML. Сериализация. Пример XML, JSON, YAML.", "prompt": "Что такое сериализация и чем отличаются XML, JSON и YAML?", "o": ["Сериализация — преобразование объектов программы в текстовый формат (JSON/XML/YAML), который можно сохранить в файл или передать по сети; десериализация — обратное превращение текста в объекты. XML — расширяемый язык разметки: данные представлены иерархией произвольных тегов (в отличие от HTML теги придумывает разработчик), типов данных нет — всё хранится как текст. JSON — пары ключ-значение и массивы, строки обязательно в двойных кавычках; типы: string, number, boolean, array, object, null. YAML — человекочитаемый формат на отступах вместо скобок и тегов, популярен для конфигураций (Docker, Kubernetes, Ansible).", "Сериализация — преобразование объектов программы в текстовый формат для передачи по сети, десериализация — обратный процесс. XML использует отступы вместо скобок и тегов и потому самый читаемый из трёх форматов. JSON — иерархия произвольных тегов, каждый из которых обязательно закрывается, а типы данных задаются через атрибуты тега. YAML основан на синтаксисе JavaScript, требует двойных кавычек для строк и применяется в основном в веб-API. Сериализация нужна, чтобы объект можно было отправить по сети или сохранить в файл, а тип формата выбирается по скорости разбора: XML для конфигураций, JSON для документов, YAML для веб-API и обмена между сервисами.", "Сериализация — это сжатие и шифрование объектов перед отправкой по сети, а десериализация — их распаковка на стороне получателя. XML хранит данные иерархией тегов и поддерживает строгую типизацию: числа, даты и логические значения распознаются автоматически по содержимому. JSON поддерживает комментарии и ссылки между объектами. YAML применяется только в вебе и для конфигураций не годится. Сериализация нужна, чтобы объект занимал меньше места и передавался быстрее, а формат выбирают по уровню защиты: XML шифрует данные, JSON сжимает их, YAML добавляет контрольные суммы для проверки целостности.", "Сериализация — компиляция исходного кода в байт-код, который затем исполняет интерпретатор при запуске программы. XML, JSON и YAML — это языки описания интерфейсов, отличающиеся скоростью разбора: XML быстрее всех, JSON медленнее, YAML занимает промежуточное положение. Все три поддерживают одинаковый набор типов данных и различаются только внешним видом записи. Сериализация нужна, чтобы ускорить выполнение программы, а формат выбирают по скорости разбора парсером: XML разбирается быстрее всех, YAML — медленнее всех, поэтому в высоконагруженных системах применяют XML."], "c": 0, "md": ">**Сериализация** —это процесс преобразования объектов программы (например, Python-объектов) в текстовый формат (JSON/XML/YAML), который можно сохранить в файл или передать по сети.\n>**Десериализация** — обратный процесс, превращение этих данных обратно в объекты. \n\nНапример, у вас есть объект \"Книга\" в программе, вы хотите отправить её по сети — вы сериализуете её в JSON/XML/YAML, отправляете, а на другом конце десериализуют обратно в объект.\n\n### XML (eXtensible Markup Language)\n\n>**XML** — это расширяемый язык разметки, предназначенный для хранения и передачи структурированных данных. Данные представляются в виде **иерархии тегов**, похожей на дерево.\n\nОчень похожий на HTML, но с одной важной разницей: в HTML теги фиксированные (head, body, p, div), а в XML вы сами придумываете теги. XML строгий: каждый открывающий тег обязательно должен быть закрыт.\n\n**Типы данных в XML:** В XML нет типов данных как таковых — всё хранится как текст. Числа, даты и т.д. нужно преобразовывать программно. Есть атрибуты (указываются внутри тега, всегда строки) и текстовое содержимое (между тегами).\n\n**Пример XML:**\n```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<power_system>                          <!-- корневой элемент: энергосистема -->\n    <substation id=\"S-101\">             <!-- атрибут: id -->\n        <name>Западная</name>           <!-- текстовое содержимое -->\n        <voltage class=\"HV\">220</voltage> <!-- атрибут class + текст 220 -->\n        <load unit=\"MW\">145</load>\n    </substation>\n    <substation id=\"S-102\">\n        <name>Восточная</name>\n        <voltage>110</voltage>\n        <load>89</load>\n    </substation>\n</power_system>\n```\n\n---\n### JSON (JavaScript Object Notation)\n\n>**JSON** — текстовый формат обмена данными, основанный на парах **ключ–значение** и массивах. Используется в веб-разработке и API.\n\nСамый популярный сегодня формат обмена данными. Он лёгкий, читаемый и поддерживается практически всеми языками программирования. Придуман на основе синтаксиса JavaScript, но используется везде: от веб-API до конфигурационных файлов.\n\n**Типы данных JSON:**\n\n| Тип                  | Пример           | Пояснение                      |\n| -------------------- | ---------------- | ------------------------------ |\n| **Строка (string)**  | `\"Привет\"`       | Обязательно в двойных кавычках |\n| **Число (number)**   | `42`, `3.14`     | Целые и дробные                |\n| **Булево (boolean)** | `true`, `false`  | Только два значения            |\n| **Массив (array)**   | `[1, 2, 3]`      | Список в квадратных скобках    |\n| **Объект (object)**  | `{\"key\": \"val\"}` | Пары ключ-значение             |\n| **null**             | `null`           | Пустое значение                |\n\n**Пример JSON:**\n```json\n{\n    \"power_system\": {                     // объект\n        \"name\": \"Система 220/110 кВ\",    // строка\n        \"substations\": [                  // массив объектов\n            {\n                \"id\": \"S-101\",           // строка\n                \"voltage_kV\": 220,       // число\n                \"load_MW\": 145.5,        // дробное число\n                \"active\": true,          // булево\n                \"transformers\": [\"T1\", \"T2\"]  // массив строк\n            },\n            {\n                \"id\": \"S-102\",\n                \"voltage_kV\": 110,\n                \"load_MW\": 89.0,\n                \"active\": true,\n                \"transformers\": [\"T1\"]\n            }\n        ]\n    }\n}\n```\n\n---\n### YAML (YAML Ain't Markup Language)\n\n>**YAML** — человекочитаемый формат сериализации данных, применяемый в основном для конфигураций.\n\nCоздавался специально для людей, а не для машин. Cамый читаемый из трёх форматов. Вместо скобок и тегов использует отступы (пробелы). Очень популярен для конфигурационных файлов (Docker, Kubernetes, GitHub Actions, Ansible).\n\n**Типы данных YAML:**\n\n| Тип | Пример | Пояснение |\n|-----|--------|-----------|\n| **Строка (string)** | `Привет` | Можно без кавычек |\n| **Число (number)** | `42`, `3.14` | Целые и дробные |\n| **Булево (boolean)** | `true`, `false`, `yes`, `no` | Много вариантов |\n| **null** | `null` или `~` | Пустое значение |\n| **Список (list)** | `- элемент` | Элементы с дефиса |\n| **Словарь (dict)** | `ключ: значение` | Пары через двоеточие |\n\n**Пример YAML:**\n```yaml\npower_system:                     # словарь (ключ: значение)\n  name: Энергосистема Сибири    # строка без кавычек\n  region: RU-SIB\n  substations:                   # список (элементы с \"- \")\n    - id: S-101                  # первый элемент\n      name: Западная\n      voltage: 220               # число\n      active: true               # булево\n      load_MW: 145\n    - id: S-102                  # второй элемент\n      name: Восточная\n      voltage: 110\n      active: true\n      load_MW: 89\n```\n### Кодировки:\n- **ASCII** — только английские символы, 1 байт, очень ограниченная.\n- **UTF-8** — универсальная, переменная длина (1–4 байта), поддерживает все языки, стандарт интернета.\n- **UTF-16** — обычно 2 или 4 байта на символ, часто в Windows/Java, хуже для английского текста по памяти.\n- **UTF-32** — всегда 4 байта на символ, простая, но самая “тяжёлая” по памяти.\n- **CP1251 (Windows-1251)** — старая кодировка для русского языка, не универсальная.\n- **ISO-8859-1** — для западноевропейских языков, устаревшая, не поддерживает кириллицу."}, {"n": "11", "title": "Multiprocessing. Процесс, CPU-bound. Process, Pool, Manager, Queue, Event, Deadlock.", "prompt": "Что такое multiprocessing, процесс и CPU-bound задача? За что отвечают Process, Pool, Manager, Queue, Event и что такое Deadlock?", "o": ["Multiprocessing — параллельное выполнение программы несколькими процессами, каждый из которых работает независимо и может занимать отдельное ядро CPU. Процесс — экземпляр выполняющейся программы с собственным адресным пространством памяти, собственными ресурсами и независимым выполнением. CPU-bound — задача, время которой ограничено мощностью процессора (вычисления, шифрование, рендеринг); для неё эффективен multiprocessing. Process — отдельный процесс, Pool — управление группой рабочих процессов, Manager — общие данные между процессами, Queue — безопасная передача данных, Event — сигнал о наступлении события, Deadlock — процессы вечно ждут освобождения ресурсов друг друга.", "Multiprocessing — выполнение множества задач в одном потоке под управлением цикла событий, который переключается между ними в моменты ожидания. Процесс — единица выполнения внутри программы, разделяющая общую память с другими процессами, поэтому доступ к данным нужно защищать блокировками. CPU-bound — задача, ограниченная ожиданием сети или диска, при которой процессор простаивает. Pool создаёт один общий экземпляр на всю программу, Queue блокирует данные от изменения, а Deadlock ускоряет работу за счёт освобождения ресурсов. Deadlock при этом возникает только между потоками, но не между процессами, поскольку у процессов общая память и обращаться к ней они могут одновременно без взаимных блокировок и ожиданий.", "Multiprocessing — параллельное выполнение несколькими процессами, каждый на своём ядре процессора. Процессы разделяют общее адресное пространство, что делает обмен данными мгновенным, но требует блокировок. CPU-bound — задача, ограниченная мощностью процессора; для неё эффективен threading, поскольку потоки создаются быстрее процессов и не копируют память. Manager отвечает за запуск функции в отдельном процессе, Process — за распределение задач между рабочими, Event сигнализирует о взаимной блокировке. Queue при этом не нужна, так как обмен идёт напрямую через общую память, а Deadlock невозможен, потому что процессы не конкурируют за ресурсы и не ждут освобождения блокировок друг друга.", "Multiprocessing — механизм кэширования результатов вычислений, позволяющий не пересчитывать одно и то же дважды при повторных вызовах. Процесс — это функция, приостановленная оператором await до получения результата. CPU-bound — задача, ограниченная объёмом оперативной памяти и скоростью диска. Pool хранит пул готовых объектов, Queue отвечает за приоритеты выполнения, Event запускает сборщик мусора, а Deadlock — аварийное завершение процесса по таймауту. Manager при этом отвечает за подсчёт ссылок на объекты, а Deadlock возникает только при нехватке оперативной памяти, когда операционная система не может выделить новый сегмент под очередной процесс."], "c": 0, "md": "### Multiprocessing\n\n>**Multiprocessing** — это способ параллельного выполнения программы, при котором используются **несколько процессов**, каждый из которых выполняется независимо и может работать на отдельном ядре CPU.\n\n>**Процесс** — это экземпляр выполняющейся программы, который имеет:\n\n- собственное адресное пространство памяти\n- собственные ресурсы (файлы, переменные, стек)\n- независимое выполнение от других процессов\n### CPU-bound задачи\n\n**CPU-bound задача** — задача, время выполнения которой ограничено мощностью процессора. Процессор работает на 100%, а не ждёт данные. Примеры: математические вычисления, обработка изображений, шифрование, рендеринг, научные расчёты. Для CPU-bound задач эффективен **multiprocessing**, потому что каждый процесс работает на своём ядре процессора.\n\n### Ключевые объекты модуля `multiprocessing`:\n\n| Объект       | Описание                                                                                                                                                      |\n| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| **Process**  | объект в Python, представляющий отдельный процесс выполнения программы(запуск функции в отдельном процессе, выполнение кода параллельно с другими процессами) |\n| **Pool**     | механизм multiprocessing для управления группой рабочих процессов(распределение задач м/д процессами)                                                         |\n| **Manager**  | объект, который позволяет процессам разделять данные(создание общих списков, словарей, очередей. Синхронизация данных)                                        |\n| **Queue**    | Очередь для безопасной передачи данных                                                                                                                        |\n| **Event**    | механизм синхронизации процессов, который сигнализирует о наступлении события                                                                                 |\n| **Deadlock** | Ситуация, когда процессы ждут друг друга вечно(блокируют друг друга, ожидая освобождения ресурсов)                                                            |\n\n### Пример использования:\n\n```python\nfrom multiprocessing import Process, Queue\n\ndef calc_load(region, q):                   # расчёт нагрузки в отдельном процессе\n    q.put(f\"{region}: {hash(region) % 1000} МВт\")  # результат в очередь\n\nq = Queue()\np1 = Process(target=calc_load, args=(\"Сибирь\", q))\np2 = Process(target=calc_load, args=(\"Урал\", q))\np1.start(); p2.start()                      # параллельно на разных ядрах\np1.join(); p2.join()                        # ждём оба\nprint(q.get(), q.get())                     # Сибирь: ...  Урал: ... МВт\n```"}, {"n": "12", "title": "Threading. Поток, I/O-bound. Thread, join, daemon. Состояние гонки, deadlock.", "prompt": "Что такое поток и I/O-bound задача? Что такое Thread, join, daemon, состояние гонки и deadlock?", "o": ["Поток — наименьшая единица выполнения внутри одного процесса; потоки одного процесса разделяют общую память, что удобно, но опасно: испорченные одним потоком данные затронут все. I/O-bound — задача, ограниченная операциями ввода-вывода: программа большую часть времени ждёт ответа сервера, файла или БД; для неё эффективен threading — пока один поток ждёт, другой работает. Thread — объект потока, start() запускает его, join() ожидает завершения, daemon — фоновый поток, автоматически завершающийся вместе с основной программой. Race condition — несколько потоков одновременно меняют общие данные, и результат зависит от порядка выполнения; deadlock — потоки ждут блокировки друг друга и программа зависает.", "Поток — экземпляр выполняющейся программы с собственным адресным пространством и ресурсами, независимый от других потоков в системе. I/O-bound — задача, ограниченная мощностью процессора: он загружен на 100% и не ждёт данные; для неё эффективен threading, так как потоки распределяются по ядрам. Метод start() ожидает завершения потока, а join() запускает его выполнение. Daemon — поток с наивысшим приоритетом, который нельзя завершить, пока он не отработает до конца. Race condition — это ситуация, когда потоки ждут блокировки друг друга и программа зависает, а deadlock — когда несколько потоков одновременно меняют общие данные и итог зависит от того, кто успел первым. Защищаться от них не требуется: интерпретатор сериализует доступ к данным сам.", "Поток — наименьшая единица выполнения внутри процесса, но потоки одного процесса имеют изолированную память, поэтому обмен данными идёт только через очереди. I/O-bound — задача, ограниченная вводом-выводом; для неё эффективен только multiprocessing, потому что потоки полностью блокируются на ожидании. Race condition — ситуация, когда потоки бесконечно ждут ресурсы друг друга, а deadlock — когда результат зависит от порядка выполнения потоков. Thread — это объект процесса, start() ожидает его завершения, а daemon — поток, который продолжает работать после выхода из программы и должен быть остановлен явно, иначе процесс не завершится и останется висеть в памяти.", "Поток — это корутина, выполнение которой планирует цикл событий в асинхронной программе, переключаясь между ними. I/O-bound — задача, ограниченная объёмом памяти, выделенной под буферы обмена. Метод join() создаёт новый поток, daemon отвечает за журналирование в фоне, а Lock применяется для ускорения вычислений за счёт распараллеливания критической секции между несколькими ядрами процессора. Race condition возникает только между процессами, а не между потоками, поскольку потоки полностью изолированы друг от друга. Соответственно блокировки (Lock) при работе с потоками не нужны и лишь замедляют выполнение программы."], "c": 0, "md": "### Что такое поток?\n\n**Поток (Thread)** — это наименьшая единица выполнения внутри одного процесса. В отличие от процессов, потоки одного процесса разделяют общую память. Это удобно, но и опасно — если один поток испортит данные, пострадают все.\n\nПростая аналогия: процесс — это кухня ресторана, а потоки — повара на этой кухне. Повара работают на одной кухне (общая память), используют общие продукты и инструменты.\n\n### I/O-bound задачи\n\n**I/O-bound задача** — задача, которая ограничена операциями ввода-вывода (Input/Output). Программа большую часть времени ждёт: ответа от сервера, загрузки файла, ответа от базы данных. Пока программа ждёт, процессор простаивает. Для I/O-bound задач эффективен **threading**: пока один поток ждёт I/O, другой может работать.\n\n### Основные понятия:\n\n| Понятие            | Описание                                                                                                |\n| ------------------ | ------------------------------------------------------------------------------------------------------- |\n| **Thread**         | Объект, представляющий отдельный поток выполнения(исп для запуска функции параллельно основному потоку) |\n| **start()**        | Запускает поток                                                                                         |\n| **join()**         | Ожидает завершения потока                                                                               |\n| **daemon**         | Фоновый поток, который автоматически завершается при завершении основной программы                      |\n| **Race Condition** | Несколько потоков одновременно изменяют общие данные, и результат зависит от порядка выполнения потоков |\n| **Deadlock**       | Потоки ждут блокировки друг друга — программа зависает                                                  |\n\n### Пример с блокировкой (Lock):\n\n```python\nimport threading\n\nlock = threading.Lock()                   # блокировка от гонки данных\ntotal = 0\n\ndef read_meter(n):                        # n — показания счётчика\n    global total\n    for _ in range(100000):\n        lock.acquire()\n        total += n                        # критическая секция\n        lock.release()\n\nt1 = threading.Thread(target=read_meter, args=(1,))\nt2 = threading.Thread(target=read_meter, args=(2,))\nt1.start(); t2.start()\nt1.join(); t2.join()\nprint(total)                              # 300000 (с Lock), без Lock было бы меньше\n```"}, {"n": "13", "title": "Threading. GIL в Python.", "prompt": "Что такое GIL в Python, зачем он нужен и как влияет на производительность?", "o": ["GIL (Global Interpreter Lock) — глобальная блокировка интерпретатора, разрешающая выполнять Python-код только одному потоку одновременно; это особенность CPython — стандартной реализации языка. Введён для упрощения управления памятью: в Python используется подсчёт ссылок, и GIL гарантирует, что счётчик меняет только один поток. Для I/O-bound задач GIL не проблема: ожидая ответа, поток отдаёт GIL другим. Для CPU-bound задач это серьёзное ограничение: четыре считающих потока не будут быстрее одного. Обход: multiprocessing (свой GIL у каждого процесса), C-расширения вроде NumPy, asyncio, экспериментальное отключение GIL в Python 3.13+.", "GIL (Global Interpreter Lock) — глобальная блокировка, разрешающая одновременно работать только одному процессу; это особенность всех реализаций Python без исключения. Введён ради безопасности сетевых операций, чтобы два процесса не писали в один сокет. Для CPU-bound задач GIL не помеха — вычисления распределяются по ядрам автоматически. А вот I/O-bound задачи он тормозит, потому что ждущий поток удерживает блокировку. Обойти его можно только увеличением количества потоков. Обойти GIL можно, увеличив количество потоков или подняв их приоритет в операционной системе; multiprocessing здесь не помогает, потому что все процессы Python используют одну общую блокировку интерпретатора на всё приложение.", "GIL (Global Interpreter Lock) — механизм сборки мусора в CPython: он отслеживает счётчик ссылок каждого объекта и удаляет объект, когда счётчик достигает нуля. На многопоточность GIL не влияет — потоки выполняются по-настоящему параллельно на разных ядрах процессора. Ограничение проявляется лишь при работе с большими объёмами памяти и обходится вызовом gc.collect() вручную либо переходом на C-расширения. На CPU-bound задачи GIL никак не влияет: четыре считающих потока работают ровно вчетверо быстрее одного. Обходить его не нужно, достаточно вызывать сборщик мусора вручную и следить за счётчиком ссылок на тяжёлые объекты.", "GIL (Global Interpreter Lock) — особенность PyPy и Jython, введённая для ускорения многопоточности за счёт объединения потоков в группы. В CPython его нет, поэтому там потоки исполняются полностью параллельно. GIL ускоряет CPU-bound задачи, распределяя их по ядрам, но замедляет I/O-bound, поскольку каждая операция ввода-вывода требует захвата блокировки и ожидания её освобождения. Для I/O-bound задач GIL критичен: поток удерживает блокировку всё время ожидания ответа сервера, поэтому вместо threading для сетевых задач применяют multiprocessing, где каждый процесс ждёт независимо от других."], "c": 0, "md": "### Что такое GIL?\n\n>**GIL (Global Interpreter Lock)** — глобальная блокировка интерпретатора Python, которая разрешает выполнять код Python **только одному потоку одновременно**. \n\nЭто особенность CPython (стандартной реализации Python). GIL работает так: даже если у вас 10 потоков, в каждый момент времени выполняется только один поток с Python-кодом. Остальные ждут своей очереди.\n\n### Зачем нужен GIL?\n\nGIL был введён для упрощения управления памятью. В Python есть механизм подсчёта ссылок: каждый объект знает, сколько переменных на него ссылаются. Когда счётчик доходит до 0, объект удаляется. Если бы несколько потоков одновременно меняли этот счётчик, возникли бы проблемы. GIL гарантирует, что счётчик ссылок изменяется только одним потоком.\n\n### Как GIL влияет на производительность?\n\n**Для I/O-bound задач (сетевые запросы, файлы, БД):** GIL не является проблемой. Когда поток ждёт ответа от сервера, он отдаёт GIL другим потокам. Поэтому threading отлично работает для задач, где программа много ждёт.\n\n**Для CPU-bound задач (вычисления, математика):** GIL становится серьёзным ограничением. Если у вас 4 потока, которые считают числа — они не будут работать быстрее одного, потому что в каждый момент работает только один поток.\n\n### Как обойти GIL?\n\n```python\n# 1. Multiprocessing — каждый процесс имеет свой GIL, реальный параллелизм\n# 2. C-расширения (NumPy) — могут освобождать GIL во время работы\n# 3. Asyncio — асинхронное программирование в одном потоке без GIL\n# 4. Python 3.13+ — экспериментальное отключение GIL\n```"}, {"n": "14", "title": "Asyncio. Корутина, цикл событий, await, task.", "prompt": "Что такое asyncio, корутина, цикл событий, await и task?", "o": ["Asyncio — библиотека Python для асинхронного программирования: она работает в одном потоке, но эффективно обрабатывает множество I/O-операций, потому что программа сама решает, когда приостановить одну задачу и переключиться на другую, вместо того чтобы ждать. Корутина — функция, которая может приостанавливать своё выполнение и продолжать его позже. Цикл событий (event loop) — диспетчер, управляющий всеми корутинами в одном потоке. Оператор await приостанавливает корутину до завершения другой, отдавая управление циклу событий. Task — объект asyncio, планирующий выполнение корутины в event loop.", "Asyncio — библиотека для параллельных вычислений: она запускает по одному процессу на ядро и распределяет между ними нагрузку, полностью обходя GIL. Корутина — это отдельный процесс со своим адресным пространством, а await блокирует текущий процесс до получения результата. Цикл событий — планировщик операционной системы, выделяющий процессам кванты времени. Task — объект блокировки, защищающий общие данные от одновременного изменения. Asyncio эффективнее всего на CPU-bound задачах — вычислениях и рендеринге, поскольку задействует все ядра процессора; для I/O-bound задач он бесполезен, там применяют отдельные потоки на каждое соединение.", "Asyncio — библиотека, которая создаёт по потоку на каждую задачу и переключает их автоматически, поэтому лучше всего подходит для CPU-bound вычислений. Корутина — функция, выполняемая в отдельном потоке. Оператор await запускает корутину в фоне и сразу возвращает управление, не дожидаясь результата. Цикл событий — бесконечный цикл, опрашивающий готовность задач, а Task — обёртка над потоком, дающая ему имя и приоритет. Asyncio эффективнее всего для математических вычислений, потому что переключение между потоками происходит быстрее, чем между процессами; при этом каждая корутина занимает собственное ядро процессора и работает независимо.", "Asyncio — формат сериализации данных для асинхронной передачи по сети, похожий на JSON, но с поддержкой потоковой обработки. Корутина — тип данных, представляющий отложенное значение, которое будет вычислено позже. Оператор await сравнивает две корутины по времени завершения. Цикл событий отвечает за повтор неудавшихся сетевых запросов, а Task описывает задачу в очереди брокера сообщений. Asyncio применяют для описания структуры сообщений между сервисами; выполнение при этом остаётся синхронным, а параллелизм обеспечивается отдельно — через потоки или процессы операционной системы."], "c": 0, "md": "### Что такое asyncio?\n\n**Asyncio** — это библиотека Python для асинхронного программирования. Она работает в одном потоке, но при этом эффективно обрабатывает множество I/O-операций. Секрет в том, что программа сама решает, когда приостановить выполнение одной задачи и переключиться на другую, вместо того чтобы ждать.\n\n### Основные понятия:\n\n| Понятие                       | Описание                                                                       |\n| ----------------------------- | ------------------------------------------------------------------------------ |\n| **Корутина (Coroutine)**      | Функция, которая может приостанавливать своё выполнение и продолжать его позже |\n| **Цикл событий (Event Loop)** | Диспетчер, управляющий всеми корутинами в одном потоке                         |\n| **await**                     | Оператор, приостанавливающий корутину до завершения другой                     |\n| **Task**                      | Объект asyncio, который планирует выполнение корутины в event loop             |\n\n### Пример использования:\n\n```python\nimport asyncio\n\nasync def read_sensor(name, delay):       # корутина — имитация опроса датчика\n    await asyncio.sleep(delay)            # await — приостановка, отдаёт управление циклу событий\n    return f\"{name}: 220.1 В\"\n\nasync def main():\n    t1 = asyncio.create_task(read_sensor(\"T1\", 2))  # задача в фоне\n    t2 = asyncio.create_task(read_sensor(\"T2\", 1))\n    r1 = await t1\n    r2 = await t2\n    print(r1, r2)\n\nasyncio.run(main())                       # ~2 сек (а не 3) — ожидание параллельно\n```"}, {"n": "15", "title": "Архитектура ПО. UML диаграммы, виды и особенности.", "prompt": "Что такое архитектура ПО и UML? На какие группы делятся UML-диаграммы?", "o": ["Архитектура ПО — общая структура системы: из каких компонентов состоит программа, как они взаимодействуют, каковы их обязанности и связи. UML (Unified Modeling Language) — язык графических диаграмм для проектирования ПО, своего рода «чертежи» для программ: они помогают разработчикам понимать друг друга и проектировать систему до написания кода. UML 2.x включает 14 типов диаграмм в двух группах: структурные описывают, из чего состоит система (классов, объектов, компонентов, развёртывания), а поведенческие — как она работает (вариантов использования, последовательности, состояний, деятельности).", "Архитектура ПО — это выбор языка, фреймворка и базы данных для проекта на старте разработки. UML — язык графических диаграмм для проектирования ПО. Его диаграммы делятся на структурные, которые показывают обмен сообщениями во времени и поток действий, и поведенческие, которые описывают состав системы: классы, объекты и размещение на оборудовании. Диаграмма классов относится к поведенческим, а диаграмма последовательности — к структурным. Диаграмма развёртывания при этом описывает требования к системе и роли пользователей, а диаграмма вариантов использования — физическое размещение серверов и баз данных на оборудовании заказчика.", "Архитектура ПО — общая структура системы и связи между её компонентами. UML — язык графических диаграмм, включающий ровно три вида: диаграмму классов, ER-диаграмму сущностей и блок-схему алгоритма. Все они относятся к структурным, поскольку описывают статику системы; поведение же документируется отдельно, обычным текстом в требованиях, так как UML не предназначен для описания сценариев работы. Диаграмма последовательности при этом показывает состав файлов и модулей системы, а диаграмма компонентов — обмен сообщениями между объектами во времени и порядок вызовов методов.", "Архитектура ПО — это набор соглашений об именовании и оформлении кода, принятых в команде разработки. UML — нотация для описания сетевых протоколов и форматов сообщений между сервисами. Диаграммы делятся на синхронные и асинхронные — по типу взаимодействия. Диаграмма развёртывания показывает поля и методы классов, а диаграмма классов — размещение сервисов на серверах и связи между ними. Диаграмма классов при этом описывает бизнес-процессы и поток действий с решениями, а диаграмма деятельности — поля, методы и связи между классами будущей программы."], "c": 0, "md": "### **Архитектура ПО**\n \n это общая структура системы, которая описывает из каких компонентов состоит программа, как эти компоненты взаимодействуют, какие у них обязанности и связи.\n### Что такое UML?\n\n**UML (Unified Modeling Language)** — язык графических диаграмм для проектирования программного обеспечения. Представьте, что вы архитектор и вам нужно спроектировать здание. Вы рисуете чертежи — планы этажей, фасады, разрезы. UML — это такие же \"чертежи\", но для программ. Они помогают разработчикам понимать друг друга и проектировать систему до того, как писать код.\n\n### Виды UML диаграмм:\n\nUML 2.x включает 14 типов диаграмм, которые делятся на две группы.\n\n#### 1. Структурные диаграммы (Structural) — описывают, из чего состоит система\n\n| Диаграмма | Что показывает | Зачем нужна |\n|-----------|---------------|-------------|\n| **Классов (Class)** | Классы, их поля, методы и связи | Проектирование структуры программы |\n| **Объектов (Object)** | Конкретные экземпляры в момент времени | Как объекты выглядят в памяти |\n| **Компонентов (Component)** | Физические части (файлы, модули) | Из каких файлов состоит система |\n| **Развёртывания (Deployment)** | Размещение на оборудовании | Где запущен сервер, где БД |\n\n#### 2. Поведенческие диаграммы (Behavioral) — описывают, как работает система\n\n| Диаграмма | Что показывает | Зачем нужна |\n|-----------|---------------|-------------|\n| **Вариантов использования (Use Case)** | Кто (актор) что делает | Сбор требований |\n| **Последовательности (Sequence)** | Обмен сообщениями во времени | Детализация алгоритмов |\n| **Состояний (Statechart)** | Состояния и переходы между ними | Моделирование жизненного цикла |\n| **Деятельности (Activity)** | Поток действий и решений | Бизнес-процессы |\n\n### Примеры использования на практике:\n\n```text\n1. Use Case — \"Кто и что может делать в системе?\" — сбор требований\n2. Class — \"Какие классы и как связаны?\" — проектирование структуры\n3. Sequence — \"Как объекты общаются друг с другом?\" — детали сценариев\n4. Activity — \"Какой алгоритм/бизнес-процесс?\" — блок-схемы\n```"}, {"n": "16", "title": "Клиент-серверная архитектура. Холодный/горячий резерв. Брокер сообщений, шина данных. Двух/трехуровневая архитектура.", "prompt": "Что такое клиент-серверная архитектура, холодный и горячий резерв, брокер сообщений и шина данных? Чем отличаются двух- и трёхуровневая архитектуры?", "o": ["Клиент-сервер: клиент запрашивает данные (например, браузер), сервер обрабатывает запросы и предоставляет данные. Холодный резерв — резервный сервер выключен, при сбое его вручную включают и настраивают: дёшево, но восстановление занимает часы. Горячий резерв — резервный сервер работает круглосуточно и синхронизируется с основным, переключение автоматическое за секунды: дорого, но простой минимален. Брокер сообщений (RabbitMQ, Kafka, Redis) — посредник: сервисы шлют сообщения ему, а он доставляет адресатам, обеспечивая асинхронность и надёжность. Шина данных (ESB) сложнее брокера: она ещё преобразует форматы, маршрутизирует и оркестрирует вызовы. 2-tier: клиент с интерфейсом и логикой ↔ БД. 3-tier: представление ↔ бизнес-логика ↔ данные.", "Клиент-сервер: клиент обрабатывает запросы и хранит данные, а сервер отвечает только за интерфейс пользователя. Холодный резерв — резервный сервер работает круглосуточно и синхронизируется с основным, поэтому переключение занимает секунды. Горячий резерв — сервер выключен и включается администраторами вручную при аварии, что дешевле, но требует часов простоя. Брокер сообщений — это база данных, хранящая файлы и журналы. Двухуровневая архитектура надёжнее трёхуровневой, потому что бизнес-логика находится на клиенте и не зависит от сервера. Шина данных (ESB) при этом только передаёт сообщения без преобразования, а трёхуровневая архитектура состоит из клиента, кэша и файлового хранилища, что обеспечивает гибкость и масштабируемость системы.", "Клиент-сервер: клиент запрашивает данные, сервер их обрабатывает и отдаёт результат. Холодный резерв — выключенный сервер, включаемый вручную; горячий — работающий и синхронизируемый постоянно. Брокер сообщений заставляет сервисы обмениваться данными напрямую и синхронно: отправитель ждёт ответа получателя, что и гарантирует доставку сообщения. Шина данных (ESB) — устаревшее название очереди печати. Уровни трёхуровневой архитектуры: клиент, кэш и диск. Двухуровневая архитектура при этом включает представление, бизнес-логику и данные, а трёхуровневая добавляет к ним слой кэширования, что снижает нагрузку на базу и упрощает обновление бизнес-логики.", "Клиент-серверная архитектура — модель, где программа целиком выполняется на сервере, а клиент лишь отображает готовую картинку. Холодный и горячий резерв — это режимы охлаждения серверного оборудования в дата-центре. Брокер сообщений распределяет нагрузку между серверами по алгоритму round-robin. Двухуровневая архитектура состоит из фронтенда и бэкенда, а трёхуровневая добавляет к ним уровень резервного копирования данных. Брокер сообщений при этом гарантирует, что сообщение не потеряется, только если получатель доступен в момент отправки; в противном случае сообщение отбрасывается, поэтому сервисы должны работать одновременно."], "c": 0, "md": "### Клиент-серверная архитектура\n\n**Клиент-серверная архитектура** — это модель, в которой программа делится на две части: **клиент** (запрашивает данные, например браузер) и **сервер** (обрабатывает запросы и предоставляет данные, например веб-сервер).\n\n### Холодный и горячий резерв\n\nЭто способы обеспечения отказоустойчивости — что делать, если основной сервер упал.\n\n**Холодный резерв (Cold Standby):** Резервный сервер выключен. При сбое — админы вручную его включают и настраивают. Плюс: дёшево. Минус: долгое восстановление (часы).\n\n**Горячий резерв (Hot Standby):** Резервный сервер работает круглосуточно и синхронизируется с основным. При сбое — переключение за секунды, автоматически. Плюс: минимальный простой. Минус: дорого.\n\n### Брокер сообщений (Message Broker)\n\n**Брокер сообщений** — посредник между сервисами. Сервисы не общаются напрямую, а отправляют сообщения брокеру, а он доставляет их адресатам. Примеры: RabbitMQ, Apache Kafka, Redis.\n\nПреимущества:\n- **Асинхронность** — отправил сообщение и забыл, не ждёшь ответа\n- **Надёжность** — сообщение не потеряется, если получатель временно недоступен\n- **Разгрузка** — можно накапливать и обрабатывать сообщения по мере возможности\n\n### Шина данных (ESB — Enterprise Service Bus)\n\nБолее сложная версия брокера, которая не только передаёт сообщения, но и преобразует форматы (XML → JSON), маршрутизирует (кому какое сообщение) и оркестрирует (в каком порядке вызывать сервисы).\n\n### Двухуровневая и трехуровневая архитектура\n\n**Двухуровневая (2-tier):**\n```text\n[Клиент (интерфейс + логика)] <-> [База данных]\n```\n- Простота, но бизнес-логика на клиенте — трудно обновлять\n\n**Трёхуровневая (3-tier):**\n```text\n[Клиент (интерфейс)] <-> [Сервер приложений (логика)] <-> [База данных]\n```\n- Уровни: представление, бизнес-логика, данные\n- Гибкость, масштабируемость, безопасность"}, {"n": "17", "title": "Система контроля версий. Git, ветки. Мажорная/минорная версия. Верификация и валидация.", "prompt": "Что такое система контроля версий и Git? Что такое ветки, мажорная/минорная версия, верификация и валидация?", "o": ["VCS отслеживает изменения в файлах: кто и когда изменил строку, позволяет вернуться к любой версии, работать нескольким разработчикам сразу и вести ветки. Типы: локальные (RCS), централизованные (CVS, SVN — единый сервер с историей), распределённые (Git, Mercurial — у каждого полная копия репозитория). Ветки: main/master — стабильная версия, feature/ — новая функция, hotfix/ — срочное исправление, develop — текущая разработка. SemVer MAJOR.MINOR.PATCH: MAJOR — несовместимые изменения, MINOR — новый функционал (обратно совместимо), PATCH — исправление ошибок. Верификация — проверка, что данные действительно верны и подтверждены источником («соответствует ли реальности»). Валидация — проверка данных на соответствие заданным правилам и ограничениям («правильно ли оформлены данные»).", "VCS отслеживает изменения в файлах и позволяет откатываться к прошлым версиям проекта. Git — централизованная система: история хранится только на сервере, а у разработчиков лежат рабочие копии без истории. В SemVer MAJOR.MINOR.PATCH мажорную версию повышают при исправлении ошибок, минорную — при несовместимых изменениях, а PATCH — при добавлении нового функционала. Верификация — проверка формата и диапазона значений, а валидация — подтверждение данных внешним источником. Ветки в Git создают, чтобы работать над задачами независимо: main предназначена для экспериментов, develop — для срочных исправлений, а hotfix — для стабильной версии, уходящей в продакшн после проверки тестировщиками.", "VCS отслеживает изменения в файлах; Git — распределённая система, у каждого разработчика полная копия репозитория. Ветка main используется для экспериментов и черновиков, а hotfix — для стабильных релизов, которые уходят в продакшн. В SemVer MAJOR меняют при несовместимых изменениях, MINOR — при новом функционале, PATCH — при багфиксах. Верификация — это проверка данных на соответствие правилам (число от 0 до 100, непустая строка), а валидация — подтверждение данных внешней системой. Типы систем контроля версий: локальные (SVN), централизованные (Git, Mercurial — история у каждого разработчика) и распределённые (RCS, CVS — единый сервер). Git относится к централизованным, поэтому при недоступности сервера работать с историей нельзя.", "Система контроля версий — механизм резервного копирования проекта по расписанию, обычно раз в сутки. Git хранит только последнюю версию файлов, поэтому вернуться к прошлым состояниям нельзя. Ветки в Git не поддерживаются: разработчики работают по очереди, блокируя файлы на время правки. Мажорная версия увеличивается раз в год, минорная — раз в квартал. Верификация и валидация — синонимы, обозначающие тестирование программы перед релизом. Типы систем контроля версий: локальные, централизованные и распределённые, причём Git относится к локальным — история хранится только на машине разработчика и не передаётся другим участникам без ручного экспорта архива с изменениями."], "c": 0, "md": "### Что такое система контроля версий?\n\n**Система контроля версий (VCS)** — это программа, которая отслеживает изменения в файлах. Она позволяет:\n- Видеть, кто и когда изменил какую строку кода\n- Возвращаться к любой предыдущей версии\n- Нескольким разработчикам работать одновременно\n- Создавать отдельные ветки для экспериментов\n\n### Типы систем контроля версий:\n\n| Тип | Примеры | Описание |\n|-----|---------|----------|\n| **Локальные** | RCS | История на одном компьютере |\n| **Централизованные** | CVS, SVN | Единый сервер с историей |\n| **Распределённые** | **Git**, Mercurial | У каждого полная копия репозитория |\n\n**Git** — самая популярная распределённая система контроля версий. У каждого разработчика есть вся история проекта.\n\n### Основные команды Git:\n\n```bash\ngit init                        # создать новый репозиторий\ngit clone <url>                 # скопировать репозиторий к себе\ngit add <file>                  # добавить файл в коммит\ngit commit -m \"сообщение\"       # зафиксировать изменения\ngit push                        # отправить на сервер\ngit pull                        # забрать с сервера\ngit branch <name>               # создать ветку\ngit checkout <branch>           # переключиться на ветку\ngit merge <branch>              # слить ветку в текущую\ngit log                         # история коммитов\n```\n\n### Ветки (Branches)\n\nПозволяют работать над разными задачами независимо:\n- **main/master** — стабильная версия\n- **feature/название** — новая функция\n- **hotfix/название** — срочное исправление\n- **develop** — текущая разработка\n\n### Мажорная и минорная версия (SemVer)\n\nФормат: **MAJOR.MINOR.PATCH** (например, `2.5.1`)\n- **MAJOR** — несовместимые изменения (старый код может не работать)\n- **MINOR** — новый функционал (обратно совместимо)\n- **PATCH** — исправление ошибок (обратно совместимо)\n\n### Верификация и валидация\n\n- **Верификация** — проверка, что данные **действительно верны / подтверждены источником**. (Проверяем, “соответствует ли это реальности”.) - данные совпадают с базой, результат вычислений совпадает с ожидаемым,  инфа подтверждена внешней системой.\n- **Валидация** — это проверка данных на соответствие заданным правилам или ограничениям. (Проверяем, “правильно ли оформлены данные”.) - число должно быть от 0 до 100, строка должна быть не пустой, дата должна иметь корректный формат."}, {"n": "18", "title": "Профилирование, дебаггинг, логирование. Debug, Info, Warning, Critical.", "prompt": "Что такое профилирование, дебаггинг и логирование? Какие есть уровни логирования?", "o": ["Профилирование — анализ производительности программы: профилировщик показывает, какие функции работают дольше всего, сколько раз они вызываются, сколько памяти потребляет программа и где узкие места (cProfile, memory_profiler). Дебаггинг — поиск и исправление ошибок с помощью отладчика: выполнение кода по шагам, просмотр значений переменных, точки останова (breakpoints) — места, где выполнение приостанавливается для анализа состояния. Логирование — запись событий программы в файл или консоль; в отличие от print() имеет уровни важности по возрастанию: DEBUG (детальная диагностика), INFO (всё работает нормально), WARNING (потенциальная проблема), ERROR (ошибка, но программа работает), CRITICAL (критическая ошибка). Ротация логов автоматически создаёт новый файл при достижении размера и архивирует старые.", "Профилирование — поиск и исправление ошибок пошаговым выполнением кода с точками останова и просмотром значений переменных. Дебаггинг — анализ производительности: он измеряет время работы функций и объём потребляемой памяти, находя узкие места. Логирование — запись событий, отличающаяся от print() только цветом вывода в консоли. Уровни по возрастанию важности: CRITICAL, ERROR, WARNING, INFO, DEBUG — то есть DEBUG самый важный и используется в продакшне. Ротация логов — это перевод журналов в бинарный формат для экономии места, а точки останова расставляет профилировщик автоматически в самых медленных функциях программы, чтобы разработчик мог их изучить. Логирование при этом ведут только на этапе разработки: в продакшне его отключают, чтобы не тратить дисковое пространство и не замедлять работу приложения лишними операциями записи.", "Профилирование — анализ производительности: какие функции медленнее всего и где узкие места программы. Дебаггинг — поиск ошибок отладчиком с точками останова и пошаговым выполнением. Логирование имеет уровни важности, но WARNING считается важнее ERROR, поскольку предупреждает о проблеме заранее, а CRITICAL применяется для подробных отладочных сообщений при разработке. Ротация логов — это перевод журналов в формат JSON для удобного разбора. Точка останова — это место, где программа аварийно завершается, а профилировщик расставляет их автоматически. Ротация логов при этом означает удаление всех журналов при перезапуске приложения, чтобы не занимать диск. Профилировщики (cProfile, memory_profiler) при этом показывают только общее время работы программы, не разбивая его по функциям, поэтому узкие места ищут вручную, расставляя таймеры по коду.", "Профилирование — шифрование логов и метрик перед записью на диск, чтобы данные о работе программы не утекли наружу. Дебаггинг — процесс развёртывания приложения на тестовом сервере перед релизом. Точка останова — место, где программа аварийно завершается с исключением. Уровни логирования — это уровни доступа пользователей к журналам: DEBUG для разработчиков, INFO для аналитиков, CRITICAL только для администраторов системы. Ротация логов — это дублирование журналов на резервный сервер в реальном времени, а инструменты профилирования (cProfile, memory_profiler) применяются для поиска синтаксических ошибок в коде перед его запуском. Уровни важности при этом выстраиваются так: INFO — самый детальный для отладки, DEBUG — штатная работа, ERROR — потенциальная проблема, а WARNING — критический сбой, после которого программа падает."], "c": 0, "md": "### Профилирование (Profiling)\n\n**Профилирование** — это анализ производительности программы. Профилировщик показывает: какие функции работают дольше всего, сколько раз они вызываются, сколько памяти потребляет программа, где узкие места. Инструменты Python: `cProfile`, `time`, `memory_profiler`.\n\n### Дебаггинг (Debugging)\n\n**Дебаггинг** — это процесс поиска и исправления ошибок с помощью отладчика. Вы можете:\n- Выполнять код по шагам (строка за строкой)\n- Смотреть значения переменных в каждой точке\n- Ставить точки останова (breakpoints) - это место в коде, на котором выполнение программы приостанавливается во время отладки для анализа состояния программы.\n\n### Логирование (Logging)\n\n**Логирование** — это запись событий программы в файл или консоль. В отличие от `print()`, логирование имеет уровни важности.\n\n### Уровни логирования (по возрастанию важности):\n\n| Уровень | Когда использовать | Пример |\n|---------|-------------------|--------|\n| **DEBUG** | Отладка, детальная диагностика | \"Загрузка файла data.csv\" |\n| **INFO** | Всё работает нормально | \"Сервер запущен на порту 8080\" |\n| **WARNING** | Потенциальная проблема | \"Мало места на диске\" |\n| **ERROR** | Ошибка, но программа работает | \"Не удалось подключиться к БД\" |\n| **CRITICAL** | Критическая ошибка, программа может упасть | \"Система не может продолжить\" |\n\n### Пример логирования в Python:\n\n```python\nimport logging\nlogging.basicConfig(level=logging.DEBUG,\n    format='%(asctime)s - %(levelname)s - %(message)s')\n\nlogging.debug(\"Счётчик #1: 1234 кВт·ч\")               # детали опроса\nlogging.info(\"Подстанция 220 кВ: штатный режим\")      # всё ОК\nlogging.warning(\"Трансформатор Т-1: перегрев 85°C\")  # потенциальная проблема\nlogging.error(\"Авария: отключение ЛЭП-500!\")          # сбой\nlogging.critical(\"Полное обесточивание региона\")      # критично\n```\n\nРотация логов — механизм, который автоматически создаёт новый файл лога при достижении определённого размера, архивирует старые и удаляет самые старые."}, {"n": "19", "title": "Сквозная функциональность. Аутентификация и авторизация. Refresh token, Access token.", "prompt": "Что такое сквозная функциональность, аутентификация и авторизация? Чем Access Token отличается от Refresh Token?", "o": ["Сквозная функциональность (cross-cutting concern) — аспекты, затрагивающие все части программы: аутентификация, авторизация, логирование, кэширование, обработка ошибок; их выносят в отдельные слои, «оборачивающие» приложение, вместо дублирования в каждом модуле. Аутентификация отвечает на вопрос «Кто ты?» — это проверка подлинности: что ты знаешь (пароль), что имеешь (телефон, токен), что ты есть (биометрия). Авторизация отвечает на вопрос «Что тебе разрешено?» — проверка прав доступа после успешной аутентификации. Access Token живёт минуты или часы, отправляется с каждым запросом в заголовке Authorization: Bearer, содержит данные о пользователе и не хранится на сервере (stateless). Refresh Token живёт дни или недели, хранится в защищённой cookie и используется только для получения нового Access Token.", "Сквозная функциональность — аспекты, затрагивающие все части программы: логирование, кэширование, обработка ошибок. Аутентификация отвечает на вопрос «Что тебе разрешено?» — она проверяет права доступа к конкретному действию. Авторизация отвечает на вопрос «Кто ты?» — подтверждает подлинность пользователя по паролю или биометрии. Сначала выполняется авторизация, и только потом, если прав достаточно, система выясняет личность пользователя. Access Token живёт неделями и хранится в защищённой cookie, а Refresh Token отправляется с каждым запросом. Факторы аутентификации: что ты знаешь (биометрия), что ты имеешь (пароль), что ты есть (SMS-код). Токены при этом хранятся на сервере, и при каждом запросе сервер сверяет их с базой, что делает схему stateful и надёжной.", "Сквозная функциональность — это намеренное дублирование общего кода в каждом модуле ради скорости работы, чтобы избежать лишних вызовов между слоями приложения. Аутентификация — «Кто ты?», авторизация — «Что тебе разрешено?». Пароль относится к фактору «что ты есть», а отпечаток пальца — к фактору «что ты знаешь». Access и Refresh Token — два одинаковых токена, выдаваемых на случай потери одного из них; оба передаются в URL запроса. Access Token при этом живёт неделями и служит только для получения нового Refresh Token, а сам Refresh Token отправляется в заголовке Authorization: Bearer с каждым запросом и содержит данные о правах пользователя.", "Сквозная функциональность — набор функций, доступных всем пользователям без входа в систему. Аутентификация и авторизация — синонимы, обозначающие проверку логина и пароля при входе. Access Token — идентификатор сессии, который сервер хранит у себя в памяти и сверяет при каждом запросе (stateful). Refresh Token хранится вместе с паролем в базе данных и служит для восстановления доступа при его утере пользователем. Аутентификация и авторизация выполняются одновременно, одним запросом, поэтому разделять их на два этапа не требуется. Логирование и кэширование к сквозной функциональности не относятся — это части бизнес-логики приложения."], "c": 0, "md": "### Сквозная функциональность (Cross-cutting concern)\n\n**Сквозная функциональность** — это аспекты программы, которые затрагивают все её части: аутентификация, авторизация, логирование, кэширование, обработка ошибок. Вместо того чтобы дублировать их в каждом модуле, их выносят в отдельные слои, которые \"оборачивают\" всё приложение.\n\n### Аутентификация (Authentication) — \"Кто ты?\"\n\nПроцесс проверки подлинности пользователя. Пользователь доказывает, что он тот, за кого себя выдаёт. Способы:\n- **Что ты знаешь:** пароль, PIN-код\n- **Что ты имеешь:** телефон (SMS), токен\n- **Что ты есть:** отпечаток пальца, лицо (биометрия)\n\n### Авторизация (Authorization) — \"Что тебе разрешено?\"\n\nПроцесс проверки прав доступа после успешной аутентификации. Система знает, кто вы, и проверяет, есть ли у вас право на данное действие. Например: обычный пользователь может читать статьи, администратор может их удалять.\n\n### Токены (JWT — JSON Web Token)\nТокен — цифровой “ключ”, который подтверждает, что пользователь уже вошёл в систему.\n\n**Access Token (Токен доступа):**\n- Живёт минуты/часы\n- Отправляется с каждым запросом: `Authorization: Bearer <токен>`\n- Содержит данные о пользователе (кто он, его права)\n- Не хранится на сервере (stateless)\n\n**Refresh Token (Токен обновления):**\n- Живёт дни/недели\n- Используется только для получения нового Access Token\n- Хранится в безопасном месте (защищённая cookie)\n\n### Схема работы:\n\n```text\n1. Логин (пароль) → сервер выдаёт Access + Refresh Token\n2. С каждым запросом клиент отправляет Access Token\n3. Access Token истёк → клиент отправляет Refresh Token\n4. Сервер проверяет Refresh → выдаёт новый Access Token\n5. Refresh Token истёк → пользователь логинится снова\n```\n1. Вошёл в систему\n   ↓\n2. Получил два ключа\n   ↓\n3. Работаешь с access token\n   ↓\n4. Access сломался по времени\n   ↓\n5. Обновляешь через refresh token\n   ↓\n6. Получаешь новый access token"}, {"n": "20", "title": "Жизненный цикл ПО. Каскадная, V-образная, Спиральная модели.", "prompt": "Что такое жизненный цикл ПО и чем отличаются каскадная, V-образная и спиральная модели?", "o": ["SDLC — последовательность этапов, которые проходит программа от идеи до прекращения использования: требования, проектирование, разработка, тестирование, внедрение, поддержка, вывод из эксплуатации. Каскадная (Waterfall): этапы идут строго друг за другом, вернуться назад нельзя, на каждом этапе чёткая документация; риск в том, что ошибка в требованиях обнаружится только на тестировании, через месяцы. V-образная: каждому этапу разработки соответствует этап тестирования, тесты планируются до написания кода; подходит для систем с высокой ценой ошибки (медицина, авиация), но остаётся негибкой к изменениям. Спиральная: итеративная модель с управлением рисками на каждом витке, требования уточняются после каждой итерации; подходит для сложных инновационных проектов, но сложна в управлении и дорога.", "SDLC — последовательность этапов жизни программы от идеи до вывода из эксплуатации. Каскадная модель самая гибкая: она позволяет в любой момент вернуться на предыдущий этап и уточнить требования, поэтому её применяют в инновационных проектах. V-образная модель отличается тем, что тестирование выполняется один раз, в самом конце, уже после внедрения системы. Спиральная модель не управляет рисками и состоит из одного витка, поэтому подходит для простых проектов с известными требованиями. В каскадной модели тесты планируются до написания кода, поэтому её выбирают для медицины и авиации, а V-образная модель применяется в простых проектах с заранее известными и стабильными требованиями заказчика.", "SDLC — последовательность этапов от идеи до вывода из эксплуатации: требования, разработка, тестирование, поддержка. Каскадная модель: этапы идут строго друг за другом, вернуться нельзя, документация на каждом этапе. В V-образной модели тестирование отсутствует как отдельная стадия — качество обеспечивается подробным проектированием, а тесты пишут после внедрения по обращениям пользователей. Спиральная модель — это каскадная, повторённая дважды: сначала прототип, затем финальная версия, без оценки рисков. Спиральная модель при этом не предполагает получения работающей версии на каждой итерации: результат появляется только в самом конце, после прохождения всех витков, поэтому заказчик участвует лишь в начале и в конце.", "SDLC — методология написания кода без документации, ориентированная на максимально быстрый результат. Каскадная модель подходит для инновационных проектов с постоянно меняющимися требованиями, поскольку не требует их фиксации на старте. V-образная модель применяется в строительстве и военных проектах и не предполагает тестирования вовсе. Спиральная модель означает, что разработчики по очереди проходят все роли в команде — от аналитика до тестировщика. Каскадная модель при этом позволяет вернуться на любой предыдущий этап, а V-образная считается самой гибкой к изменениям требований, поскольку тестирование в ней ведётся параллельно с уточнением технического задания."], "c": 0, "md": "### Что такое жизненный цикл ПО?\n\n**Жизненный цикл ПО (SDLC — Software Development Life Cycle)** — это последовательность этапов, которые проходит программа от появления идеи до полного прекращения использования: требования, проектирование, разработка, тестирование, внедрение, поддержка, вывод из эксплуатации.\n\n### Каскадная модель (Waterfall)\n\nЭтапы идут строго друг за другом, как водопад — вернуться назад нельзя.\n\n```text\n[Требования] → [Проектирование] → [Реализация] → [Тестирование] → [Внедрение] → [Сопровождение]\n```\n\n**Особенности:**\n- Строгая последовательность, вернуться на предыдущий этап нельзя\n- Чёткая документация на каждом этапе\n- Подходит для проектов с чёткими, стабильными требованиями\n- Риск: ошибка на этапе требований обнаружится только на тестировании (через месяцы)\n- Примеры: строительство, военные проекты\n\n### V-образная модель (V-Model)\n\nУлучшение каскадной модели. Каждому этапу разработки соответствует этап тестирования. Диаграмма похожа на букву V.\n\n```text\nТребования →                  ← Приёмочное тестирование\n  Системное проект. →       ← Системное тестирование\n    Архитектур. проект. →  ← Интеграционное тестирование\n      Кодирование →   ← Модульное тестирование\n```\n\n**Особенности:**\n- Каждому этапу разработки соответствует этап тестирования\n- Тесты планируются до написания кода\n- Подходит для систем с высокой ценой ошибки (медицина, авиация)\n- Недостаток: всё ещё негибкая к изменениям\n\n### Спиральная модель (Spiral)\n\nИтеративная модель с управлением рисками. Проект делается по частям (виткам спирали), каждый раз проходя полный цикл.\n\n```text\nКаждый виток спирали:\n1. Цели: что делаем на этой итерации?\n2. Риски: что может пойти не так? Нужен прототип?\n3. Разработка + тестирование\n4. Планирование следующей итерации, оценка резов\n```\n\n**Особенности:**\n- Итерации — каждый раз получается работающая (но неполная) версия\n- Управление рисками на каждом витке\n- Требования можно уточнять после каждой итерации\n- Подходит для сложных, инновационных проектов\n- Недостаток: сложность управления, может быть дорого\n\n### Сравнение моделей:\n\n| Характеристика | Каскадная | V-образная | Спиральная |\n|---------------|-----------|------------|------------|\n| Гибкость | Низкая | Низкая | Высокая |\n| Управление рисками | Нет | Частично | На каждом шаге |\n| Участие заказчика | В начале и конце | В начале и конце | На каждой итерации |\n| Когда применять | Простые проекты | Критичные системы | Сложные проекты |"}];
+// Банк вопросов. t = id темы, q = вопрос, o = варианты, c = индекс верного, e = пояснение.
+const TOPICS = [
+  { id: 1,  name: "Паттерны: группы, Observer, Factory" },
+  { id: 2,  name: "Паттерны: Singleton, Builder" },
+  { id: 3,  name: "Паттерны: Visitor, State" },
+  { id: 4,  name: "Паттерны: Bridge, Adapter" },
+  { id: 5,  name: "SOLID: SRP, OCP, LSP" },
+  { id: 6,  name: "SOLID: ISP, DIP" },
+  { id: 7,  name: "API: REST, SOAP, HTTP-методы" },
+  { id: 8,  name: "JSON, YAML, XML, кодировки" },
+  { id: 11, name: "Multiprocessing, CPU-bound" },
+  { id: 12, name: "Threading, I/O-bound" },
+  { id: 13, name: "GIL в Python" },
+  { id: 14, name: "Asyncio" },
+  { id: 15, name: "Архитектура ПО, UML" },
+  { id: 16, name: "Клиент-сервер, резерв, брокеры" },
+  { id: 17, name: "Git, версии, верификация/валидация" },
+  { id: 18, name: "Профилирование, логирование" },
+  { id: 19, name: "Аутентификация, токены" },
+  { id: 20, name: "Жизненный цикл ПО (SDLC)" },
+];
+
+const QUESTIONS = [
+  // ---------- 1. Паттерны: группы, Observer, Factory ----------
+  { t:1, q:"На сколько основных групп делятся паттерны проектирования?", o:["2","3","4","5"], c:1, e:"Порождающие, структурные и поведенческие — три группы." },
+  { t:1, q:"К какой группе относится паттерн Factory?", o:["Порождающие","Структурные","Поведенческие","Архитектурные"], c:0, e:"Factory отвечает за создание объектов → порождающий." },
+  { t:1, q:"К какой группе относится паттерн Observer?", o:["Порождающие","Структурные","Поведенческие","Сетевые"], c:2, e:"Observer описывает взаимодействие объектов → поведенческий." },
+  { t:1, q:"Что делает паттерн Observer?", o:["Гарантирует один экземпляр класса","Реализует связь «один ко многим»: издатель уведомляет подписчиков","Соединяет несовместимые интерфейсы","Собирает объект пошагово"], c:1, e:"Издатель автоматически оповещает всех зависимых подписчиков об изменениях." },
+  { t:1, q:"Как в Observer подписчик получает уведомление?", o:["Опрашивает издателя в бесконечном цикле","Издатель вызывает у него метод update()","Через глобальную переменную","Читает лог-файл"], c:1, e:"Издатель проходит по списку подписчиков и вызывает update() у каждого." },
+  { t:1, q:"Главная цель паттерна Factory?", o:["Вынести логику создания объектов в отдельный класс","Хранить список наблюдателей","Ограничить число экземпляров одним","Кэшировать результаты"], c:0, e:"Клиент говорит «дай объект», а как его создать — решает фабрика." },
+  { t:1, q:"За что отвечают порождающие паттерны?", o:["За создание объектов","За структуру классов","За обмен сообщениями","За безопасность"], c:0, e:"Creational-паттерны абстрагируют процесс создания объектов." },
+
+  // ---------- 2. Singleton, Builder ----------
+  { t:2, q:"Что гарантирует паттерн Singleton?", o:["Быстрое создание объектов","Ровно один экземпляр класса на всю программу","Потокобезопасность любых методов","Автоматическое удаление объектов"], c:1, e:"Сколько бы раз ни создавали — возвращается один и тот же экземпляр." },
+  { t:2, q:"Типичный пример применения Singleton?", o:["Список подписчиков","Пошаговая сборка объекта","Соединение с базой данных / настройки приложения","Переходник интерфейсов"], c:2, e:"Одно подключение к БД или единые настройки на всё приложение." },
+  { t:2, q:"Через какой метод в Python обычно реализуют Singleton?", o:["`__init__`","`__new__`","`__call__`","`__del__`"], c:1, e:"__new__ проверяет, создан ли уже экземпляр, и возвращает существующий." },
+  { t:2, q:"Какую проблему решает паттерн Builder?", o:["Слишком много подписчиков","Создание сложного объекта со множеством параметров","Утечки памяти","Несовместимость интерфейсов"], c:1, e:"Builder заменяет «конструктор ада» на пошаговую сборку." },
+  { t:2, q:"Зачем методы Builder возвращают self?", o:["Для экономии памяти","Чтобы делать цепочку вызовов (fluent-интерфейс)","Для многопоточности","Это требование Python"], c:1, e:"return self позволяет писать .set_a().set_b().build()." },
+  { t:2, q:"Какой метод Builder возвращает готовый объект?", o:["create()","make()","build()","get()"], c:2, e:"build() отдаёт полностью собранный объект." },
+
+  // ---------- 3. Visitor, State ----------
+  { t:3, q:"Что позволяет паттерн Visitor?", o:["Добавлять операции над объектами, не меняя их классы","Создавать один экземпляр","Хранить состояние объекта","Сжимать данные"], c:0, e:"Новая операция = новый посетитель, код самих объектов не трогаем." },
+  { t:3, q:"Как объект принимает посетителя в Visitor?", o:["Через глобальный реестр","Метод accept(visitor), который вызывает нужный метод посетителя","Наследованием от Visitor","Через конструктор"], c:1, e:"accept() реализует «двойную диспетчеризацию»." },
+  { t:3, q:"Что делает паттерн State?", o:["Соединяет интерфейсы","Выносит поведение каждого состояния в отдельный класс","Создаёт объекты по типу","Уведомляет подписчиков"], c:1, e:"State убирает громоздкие if, делегируя поведение объекту-состоянию." },
+  { t:3, q:"Кто хранит текущее состояние в паттерне State?", o:["Само состояние","Контекст, который делегирует ему работу","Фабрика","Глобальная переменная"], c:1, e:"Контекст держит ссылку на текущее состояние и передаёт ему запросы." },
+  { t:3, q:"Что может делать объект-состояние в паттерне State?", o:["Только читать данные","Переключать контекст в другое состояние","Создавать потоки","Ничего, он пассивен"], c:1, e:"Состояние может сменить текущее состояние контекста на другое." },
+
+  // ---------- 4. Bridge, Adapter ----------
+  { t:4, q:"Что делает паттерн Bridge (Мост)?", o:["Соединяет уже существующие несовместимые интерфейсы","Разделяет абстракцию и реализацию на две независимые иерархии","Гарантирует один экземпляр","Уведомляет подписчиков"], c:1, e:"Две иерархии соединяются через композицию, избегая взрыва классов." },
+  { t:4, q:"Хорошая аналогия для паттерна Adapter?", o:["Переходник USB-C → HDMI","Список рассылки","Чертёж здания","Конвейер сборки"], c:0, e:"Adapter соединяет два несовместимых интерфейса, как переходник." },
+  { t:4, q:"Зачем нужен Adapter?", o:["Ускорить программу","Использовать класс с неподходящим интерфейсом, не меняя его","Создать копию объекта","Разбить задачу на потоки"], c:1, e:"Адаптер оборачивает старый объект и даёт нужный интерфейс." },
+  { t:4, q:"От чего спасает Bridge?", o:["От утечек памяти","От комбинаторного взрыва числа классов","От состояния гонки","От дедлоков"], c:1, e:"Без Bridge каждое сочетание «абстракция × реализация» — новый класс." },
+  { t:4, q:"Ключевое отличие Adapter от Bridge?", o:["Adapter быстрее","Adapter соединяет существующее несовместимое, Bridge проектируют заранее","Bridge только для сетей","Отличий нет"], c:1, e:"Adapter — «пост-фактум», Bridge закладывают на этапе проектирования." },
+
+  // ---------- 5. SOLID: SRP, OCP, LSP ----------
+  { t:5, q:"Что означает буква S в SOLID?", o:["Security","Single Responsibility","Stateless","Scalability"], c:1, e:"Принцип единственной ответственности." },
+  { t:5, q:"Как формулируется SRP?", o:["Класс должен быть маленьким","У класса должна быть одна причина для изменения","Класс не должен наследоваться","Класс должен быть потокобезопасным"], c:1, e:"Одна ответственность — одна причина меняться." },
+  { t:5, q:"OCP гласит, что классы должны быть...", o:["Открыты для изменения, закрыты для расширения","Открыты для расширения, закрыты для изменения","Закрыты для всего","Открыты для всего"], c:1, e:"Добавляем поведение новыми классами, не переписывая старый код." },
+  { t:5, q:"Как по OCP правильно добавлять функциональность?", o:["Переписать существующий класс","Создать новый класс (расширение)","Удалить старый код","Скопировать метод"], c:1, e:"Расширение через наследование/новые классы, а не правка старых." },
+  { t:5, q:"О чём принцип подстановки Лисков (LSP)?", o:["Объекты подкласса должны заменять базовый класс без поломок","Классы не должны зависеть друг от друга","Интерфейсы должны быть маленькими","Нельзя использовать наследование"], c:0, e:"Где ждут «Птицу» — «Пингвин» должен работать без сюрпризов." },
+  { t:5, q:"Что нарушает LSP?", o:["Класс с одним методом","Подкласс бросает исключение там, где базовый обещает работу","Использование интерфейса","Создание объекта фабрикой"], c:1, e:"Если «пингвин» ломает start() — наследование спроектировано неверно." },
+
+  // ---------- 6. SOLID: ISP, DIP ----------
+  { t:6, q:"О чём принцип разделения интерфейсов (ISP)?", o:["Один большой универсальный интерфейс лучше","Лучше несколько маленьких специализированных интерфейсов","Интерфейсы не нужны","Интерфейс должен быть у каждого метода"], c:1, e:"Клиент не должен зависеть от методов, которые не использует." },
+  { t:6, q:"Что является нарушением ISP?", o:["Класс реализует ненужные ему методы","Класс имеет один метод","Класс наследуется","Класс использует композицию"], c:0, e:"Заставлять реализовывать лишние методы — нарушение ISP." },
+  { t:6, q:"О чём принцип инверсии зависимостей (DIP)?", o:["Модули должны зависеть от абстракций, а не от конкретных реализаций","Всё должно быть в одном классе","Нельзя использовать интерфейсы","Данные важнее логики"], c:0, e:"И верхний, и нижний уровни зависят от абстракций." },
+  { t:6, q:"Пример соблюдения DIP?", o:["Класс жёстко создаёт MySQLDatabase() внутри себя","Класс зависит от абстрактного интерфейса БД, реализация подставляется извне","Все методы статические","Используется глобальная переменная"], c:1, e:"Зависимость от абстракции Meter, а не от конкретного счётчика." },
+  { t:6, q:"Как в Python объявляют абстрактный метод?", o:["`@staticmethod`","`@abstractmethod` (модуль abc)","`@property`","`@classmethod`"], c:1, e:"Наследование от ABC + декоратор @abstractmethod." },
+
+  // ---------- 7. API: REST, SOAP, HTTP ----------
+  { t:7, q:"Что такое API?", o:["Язык программирования","Интерфейс для обмена данными между приложениями","База данных","Протокол шифрования"], c:1, e:"API позволяет приложениям вызывать функции и обмениваться данными." },
+  { t:7, q:"В каком формате REST обычно передаёт данные?", o:["XML","JSON","YAML","CSV"], c:1, e:"REST чаще всего использует JSON." },
+  { t:7, q:"REST по своей природе...", o:["stateful (хранит состояние клиента)","stateless (не хранит состояние клиента)","всегда шифрует данные","работает без HTTP"], c:1, e:"Каждый запрос независим, сервер не хранит состояние клиента." },
+  { t:7, q:"Какой формат данных использует SOAP?", o:["JSON","XML","YAML","Protobuf"], c:1, e:"SOAP — протокол обмена сообщениями на основе XML." },
+  { t:7, q:"Какой HTTP-метод создаёт новый ресурс?", o:["`GET`","`POST`","`PUT`","`DELETE`"], c:1, e:"POST — создание, обычно с данными в теле запроса." },
+  { t:7, q:"Какой HTTP-метод полностью заменяет существующий ресурс?", o:["`GET`","`POST`","`PUT`","`PATCH`"], c:2, e:"PUT — полная замена/обновление ресурса." },
+  { t:7, q:"Успешный ответ на создание ресурса (POST)?", o:["200 OK","201 Created","204 No Content","404 Not Found"], c:1, e:"Создание нового ресурса → 201 Created." },
+  { t:7, q:"Что такое эндпоинт (endpoint)?", o:["Тип базы данных","URL-адрес ресурса API","Ошибка сервера","Формат данных"], c:1, e:"Endpoint — адрес, по которому клиент шлёт запрос." },
+  { t:7, q:"Для чего предназначен метод GET?", o:["Удаления данных","Чтения данных без изменений","Создания ресурса","Полной замены ресурса"], c:1, e:"GET только читает, не меняя данные." },
+
+  // ---------- 8. JSON / YAML / XML / кодировки ----------
+  { t:8, q:"Что такое сериализация?", o:["Преобразование объекта в текстовый формат для хранения/передачи","Шифрование данных","Сжатие файлов","Удаление объекта"], c:0, e:"Объект → JSON/XML/YAML, который можно сохранить или отправить." },
+  { t:8, q:"Как называется превращение текста обратно в объект?", o:["Компиляция","Десериализация","Валидация","Кодирование"], c:1, e:"Десериализация — обратный сериализации процесс." },
+  { t:8, q:"Какой формат использует отступы (пробелы) вместо скобок и тегов?", o:["JSON","XML","YAML","HTML"], c:2, e:"YAML читается по отступам, без скобок и тегов." },
+  { t:8, q:"Какой формат основан на парах ключ-значение и синтаксисе JavaScript?", o:["XML","JSON","YAML","INI"], c:1, e:"JSON вырос из синтаксиса объектов JavaScript." },
+  { t:8, q:"Чем теги XML отличаются от HTML?", o:["Их придумывает сам разработчик","Они всегда на английском","Их нельзя закрывать","Они всегда числовые"], c:0, e:"В HTML теги фиксированы, в XML — произвольные." },
+  { t:8, q:"Как в JSON записываются строки?", o:["В одинарных кавычках","В двойных кавычках","Без кавычек","В угловых скобках"], c:1, e:"Строки JSON обязательно в двойных кавычках." },
+  { t:8, q:"Для чего чаще всего применяют YAML?", o:["Для стилей страниц","Для конфигураций (Docker, Kubernetes, Ansible)","Для запросов к БД","Для картинок"], c:1, e:"YAML — популярный формат конфигов." },
+  { t:8, q:"Какая кодировка — стандарт интернета, 1–4 байта, поддерживает все языки?", o:["`ASCII`","`UTF-8`","`CP1251`","`ISO-8859-1`"], c:1, e:"UTF-8 — универсальная кодировка переменной длины." },
+  { t:8, q:"Какая кодировка поддерживает только английские символы (1 байт)?", o:["`UTF-8`","`UTF-16`","`ASCII`","`UTF-32`"], c:2, e:"ASCII — 1 байт, только базовая латиница." },
+  { t:8, q:"Как в JSON записывается «пустое» значение?", o:["`nil`","`None`","`null`","`empty`"], c:2, e:"В JSON пустое значение — null." },
+
+  // ---------- 11. Multiprocessing ----------
+  { t:11, q:"На чём основан multiprocessing?", o:["На нескольких независимых процессах","На одном потоке","На корутинах","На кэшировании"], c:0, e:"Несколько процессов, каждый может работать на своём ядре." },
+  { t:11, q:"Чем ограничена CPU-bound задача?", o:["Скоростью сети","Мощностью процессора","Объёмом диска","Задержкой БД"], c:1, e:"Процессор загружен на 100% (вычисления, шифрование, рендеринг)." },
+  { t:11, q:"Что эффективнее для CPU-bound задач?", o:["Threading","Multiprocessing","Asyncio","Один поток"], c:1, e:"Каждый процесс работает на своём ядре — реальный параллелизм." },
+  { t:11, q:"Что такое Deadlock?", o:["Быстрое завершение процесса","Процессы бесконечно ждут ресурсы друг друга","Очистка памяти","Ошибка компиляции"], c:1, e:"Взаимная блокировка: все ждут и никто не продолжает." },
+  { t:11, q:"Какой объект multiprocessing служит для безопасной передачи данных?", o:["Pool","Queue","Event","Lock"], c:1, e:"Queue — потоко/процессо-безопасная очередь." },
+  { t:11, q:"Что имеет каждый процесс?", o:["Общую память с другими","Собственное адресное пространство памяти","Один общий стек","Общие переменные"], c:1, e:"Процессы изолированы, у каждого своя память." },
+  { t:11, q:"Для чего нужен Pool в multiprocessing?", o:["Для шифрования","Для управления группой рабочих процессов и распределения задач","Для логирования","Для сети"], c:1, e:"Pool распределяет задачи между пулом процессов." },
+
+  // ---------- 12. Threading ----------
+  { t:12, q:"Что такое поток (thread)?", o:["Отдельная программа","Наименьшая единица выполнения внутри процесса","Файл на диске","Сетевое соединение"], c:1, e:"Поток — единица выполнения; в процессе их может быть много." },
+  { t:12, q:"Что разделяют потоки одного процесса?", o:["Только код","Общую память","Ничего","Только файлы"], c:1, e:"Общая память удобна, но опасна — данные можно испортить." },
+  { t:12, q:"Чем ограничена I/O-bound задача?", o:["Процессором","Операциями ввода-вывода (ожиданием)","Памятью","Числом ядер"], c:1, e:"Программа в основном ждёт: сеть, диск, БД." },
+  { t:12, q:"Что эффективно для I/O-bound задач?", o:["Multiprocessing","Threading","Только один поток","Ничего"], c:1, e:"Пока один поток ждёт I/O, другой работает." },
+  { t:12, q:"Что такое состояние гонки (Race Condition)?", o:["Потоки ждут друг друга вечно","Несколько потоков меняют общие данные и результат зависит от порядка","Поток завершился с ошибкой","Слишком много процессов"], c:1, e:"Итог зависит от того, кто успел первым." },
+  { t:12, q:"Что делает метод join()?", o:["Запускает поток","Ожидает завершения потока","Удаляет поток","Блокирует ресурс"], c:1, e:"join() дожидается окончания работы потока." },
+  { t:12, q:"Что такое daemon-поток?", o:["Поток с высшим приоритетом","Фоновый поток, завершающийся вместе с основной программой","Поток без имени","Поток, который нельзя остановить"], c:1, e:"Демон завершается автоматически при выходе программы." },
+  { t:12, q:"Чем защищаются от гонки данных?", o:["Кэшем","Блокировкой (Lock)","Логами","Очередью печати"], c:1, e:"Lock защищает критическую секцию от одновременного доступа." },
+
+  // ---------- 13. GIL ----------
+  { t:13, q:"Что такое GIL?", o:["Сборщик мусора","Глобальная блокировка: только один поток выполняет Python-код одновременно","Библиотека для сети","Формат данных"], c:1, e:"Global Interpreter Lock — по одному потоку с Python-кодом за раз." },
+  { t:13, q:"Особенностью какой реализации Python является GIL?", o:["PyPy","CPython","Jython","IronPython"], c:1, e:"GIL — черта стандартного CPython." },
+  { t:13, q:"Зачем ввели GIL?", o:["Для ускорения сети","Для упрощения управления памятью (подсчёт ссылок)","Для шифрования","Для логирования"], c:1, e:"GIL защищает счётчик ссылок от гонок между потоками." },
+  { t:13, q:"Для каких задач GIL — серьёзное ограничение?", o:["I/O-bound","CPU-bound","Сетевых","Файловых"], c:1, e:"При вычислениях потоки не ускоряются — работает один за раз." },
+  { t:13, q:"Для каких задач GIL почти не мешает?", o:["CPU-bound","I/O-bound","Рендеринга","Шифрования"], c:1, e:"При ожидании I/O поток отдаёт GIL другим." },
+  { t:13, q:"Как получить реальный параллелизм в обход GIL?", o:["Добавить потоки","Использовать multiprocessing (свой GIL у каждого процесса)","Увеличить память","Отключить логи"], c:1, e:"Отдельные процессы = отдельные интерпретаторы и GIL." },
+
+  // ---------- 14. Asyncio ----------
+  { t:14, q:"В скольких потоках работает asyncio?", o:["В одном","В двух","По числу ядер","В неограниченном количестве"], c:0, e:"Asyncio — однопоточная кооперативная многозадачность." },
+  { t:14, q:"Что такое корутина?", o:["Отдельный процесс","Функция, которая может приостанавливаться и продолжаться позже","Тип данных","Блокировка"], c:1, e:"Корутина отдаёт управление в точках await." },
+  { t:14, q:"Что делает оператор await?", o:["Завершает программу","Приостанавливает корутину и отдаёт управление циклу событий","Создаёт поток","Блокирует весь процесс"], c:1, e:"await ждёт результат, не блокируя цикл событий." },
+  { t:14, q:"Что управляет корутинами в asyncio?", o:["Пул процессов","Цикл событий (event loop)","Планировщик ОС","GIL"], c:1, e:"Event loop — диспетчер всех корутин в одном потоке." },
+  { t:14, q:"Что планирует выполнение корутины в event loop?", o:["Thread","Process","Task","Lock"], c:2, e:"Task оборачивает корутину и ставит её в цикл событий." },
+  { t:14, q:"Для каких задач лучше всего подходит asyncio?", o:["CPU-bound","I/O-bound (много ожидания)","Рендеринг","Матвычисления"], c:1, e:"Много ожидания I/O — идеальный случай для asyncio." },
+
+  // ---------- 15. UML ----------
+  { t:15, q:"Что такое UML?", o:["Язык программирования","Язык графических диаграмм для проектирования ПО","База данных","Протокол связи"], c:1, e:"UML — «чертежи» для программ." },
+  { t:15, q:"К какой группе относится диаграмма классов?", o:["Структурные","Поведенческие","Сетевые","Временные"], c:0, e:"Class-диаграмма описывает структуру системы." },
+  { t:15, q:"Какая диаграмма показывает «кто (актор) что делает» для сбора требований?", o:["Классов","Последовательности","Вариантов использования (Use Case)","Развёртывания"], c:2, e:"Use Case — про требования и роли акторов." },
+  { t:15, q:"Что показывает диаграмма последовательности (Sequence)?", o:["Размещение на серверах","Обмен сообщениями во времени","Состав файлов","Наследование классов"], c:1, e:"Sequence детализирует, как объекты общаются по шагам." },
+  { t:15, q:"На какие две группы делятся диаграммы UML?", o:["Простые и сложные","Структурные и поведенческие","Внешние и внутренние","Статические и сетевые"], c:1, e:"Structural (из чего) и Behavioral (как работает)." },
+  { t:15, q:"Что показывает диаграмма развёртывания (Deployment)?", o:["Алгоритм","Размещение на оборудовании (где сервер, где БД)","Классы и методы","Требования"], c:1, e:"Deployment — физическое размещение системы." },
+
+  // ---------- 16. Клиент-сервер, резерв, брокеры ----------
+  { t:16, q:"Что характерно для горячего резерва (Hot Standby)?", o:["Сервер выключен, включают вручную","Резервный сервер работает постоянно, переключение за секунды","Резерва вообще нет","Данные не синхронизируются"], c:1, e:"Дорого, но минимальный простой — переключение автоматическое." },
+  { t:16, q:"Что характерно для холодного резерва (Cold Standby)?", o:["Резервный сервер выключен, включается вручную при сбое","Мгновенное переключение","Постоянная синхронизация","Не требует администратора"], c:0, e:"Дёшево, но восстановление долгое (часы)." },
+  { t:16, q:"Что делает брокер сообщений?", o:["Хранит файлы","Посредник: принимает сообщения и доставляет адресатам","Шифрует диски","Балансирует питание"], c:1, e:"Сервисы не общаются напрямую — через брокер (RabbitMQ, Kafka)." },
+  { t:16, q:"Главное преимущество брокера сообщений?", o:["Экономия диска","Асинхронность и надёжность доставки","Ускорение процессора","Меньше кода"], c:1, e:"Отправил и забыл; сообщение не потеряется при недоступности получателя." },
+  { t:16, q:"Чем шина данных (ESB) отличается от простого брокера?", o:["Она только передаёт сообщения","Ещё преобразует форматы, маршрутизирует и оркестрирует","Она медленнее","Она не хранит сообщения"], c:1, e:"ESB — более «умный» посредник (XML→JSON, маршрутизация, оркестрация)." },
+  { t:16, q:"Три уровня трёхуровневой (3-tier) архитектуры — это...", o:["Клиент, кэш, диск","Представление, бизнес-логика, данные","Сеть, память, ЦП","Фронт, бэкап, лог"], c:1, e:"Presentation → Business Logic → Data." },
+  { t:16, q:"Недостаток двухуровневой (2-tier) архитектуры?", o:["Слишком безопасна","Бизнес-логика на клиенте — трудно обновлять","Нет базы данных","Слишком масштабируема"], c:1, e:"Логика на клиенте усложняет сопровождение." },
+
+  // ---------- 17. Git / версии / вер.&вал. ----------
+  { t:17, q:"К какому типу систем относится Git?", o:["Локальная","Централизованная","Распределённая","Облачная"], c:2, e:"У каждого разработчика полная копия репозитория." },
+  { t:17, q:"Какая команда фиксирует изменения в истории?", o:["`git add`","`git commit`","`git push`","`git status`"], c:1, e:"git commit создаёт запись в истории." },
+  { t:17, q:"Что делает git pull?", o:["Отправляет изменения на сервер","Забирает изменения с сервера","Создаёт ветку","Удаляет коммит"], c:1, e:"pull — забрать с удалённого репозитория, push — отправить." },
+  { t:17, q:"В версии MAJOR.MINOR.PATCH что меняет MAJOR?", o:["Мелкие правки","Несовместимые изменения","Только документацию","Ничего важного"], c:1, e:"MAJOR — ломающие обратную совместимость изменения." },
+  { t:17, q:"Что означает увеличение PATCH?", o:["Новый крупный функционал","Исправление ошибок (обратно совместимо)","Несовместимые изменения","Смену лицензии"], c:1, e:"PATCH — багфиксы без потери совместимости." },
+  { t:17, q:"Что обычно содержит ветка main/master?", o:["Экспериментальный код","Стабильную версию","Только тесты","Личные заметки"], c:1, e:"main/master — стабильная линия разработки." },
+  { t:17, q:"Что такое валидация (по конспекту)?", o:["Проверка данных на соответствие правилам/ограничениям","Подтверждение данных внешним источником","Сравнение с эталоном реальности","Шифрование данных"], c:0, e:"Валидация — «правильно ли оформлены данные» (формат, диапазон)." },
+  { t:17, q:"Что такое верификация (по конспекту)?", o:["Проверка формата строки","Проверка, что данные действительно верны/подтверждены источником","Создание ветки","Логирование"], c:1, e:"Верификация — «соответствует ли это реальности» (совпадает с базой/эталоном)." },
+
+  // ---------- 18. Профилирование / логирование ----------
+  { t:18, q:"Что такое профилирование?", o:["Поиск ошибок отладчиком","Анализ производительности программы","Запись событий в файл","Проверка прав доступа"], c:1, e:"Профилировщик ищет узкие места: время, вызовы, память." },
+  { t:18, q:"Что такое дебаггинг?", o:["Анализ памяти","Поиск и исправление ошибок с помощью отладчика","Резервное копирование","Шифрование"], c:1, e:"Отладчик позволяет идти по коду и смотреть переменные." },
+  { t:18, q:"Что такое точка останова (breakpoint)?", o:["Конец программы","Место, где выполнение приостанавливается для анализа","Ошибка компиляции","Уровень лога"], c:1, e:"На breakpoint выполнение замирает — удобно смотреть состояние." },
+  { t:18, q:"Чем логирование лучше обычного print()?", o:["Оно быстрее","У него есть уровни важности","Оно короче","Оно шифрует вывод"], c:1, e:"Уровни (DEBUG…CRITICAL) позволяют фильтровать сообщения." },
+  { t:18, q:"Какой уровень логирования самый детальный (для отладки)?", o:["INFO","DEBUG","WARNING","ERROR"], c:1, e:"DEBUG — мелкая диагностика при разработке." },
+  { t:18, q:"Какой уровень используют, когда «всё работает нормально»?", o:["DEBUG","INFO","WARNING","CRITICAL"], c:1, e:"INFO — штатные события («сервер запущен»)." },
+  { t:18, q:"Что важнее по уровню логирования?", o:["WARNING важнее ERROR","ERROR важнее WARNING","Они равны","Зависит от ОС"], c:1, e:"Порядок: DEBUG < INFO < WARNING < ERROR < CRITICAL." },
+  { t:18, q:"Что такое ротация логов?", o:["Перевод логов в JSON","Автосоздание нового файла при достижении размера + архивация старых","Удаление всех логов","Шифрование логов"], c:1, e:"Старые логи архивируются, самые старые удаляются." },
+
+  // ---------- 19. Auth / токены ----------
+  { t:19, q:"На какой вопрос отвечает аутентификация?", o:["«Что тебе разрешено?»","«Кто ты?»","«Где ты?»","«Когда ты вошёл?»"], c:1, e:"Аутентификация — проверка подлинности пользователя." },
+  { t:19, q:"На какой вопрос отвечает авторизация?", o:["«Кто ты?»","«Что тебе разрешено?»","«Как тебя зовут?»","«Откуда запрос?»"], c:1, e:"Авторизация — проверка прав доступа." },
+  { t:19, q:"Что происходит раньше?", o:["Авторизация, потом аутентификация","Аутентификация, потом авторизация","Одновременно","Порядок не важен"], c:1, e:"Сначала «кто ты», затем «что тебе можно»." },
+  { t:19, q:"Что характерно для Access Token?", o:["Живёт недели, хранится в cookie","Живёт минуты/часы, шлётся с каждым запросом","Используется только для входа","Хранится на сервере"], c:1, e:"Короткоживущий, передаётся при каждом запросе." },
+  { t:19, q:"Для чего нужен Refresh Token?", o:["Для рисования UI","Для получения нового Access Token","Для логирования","Для шифрования диска"], c:1, e:"Долгоживущий токен обновляет истёкший Access Token." },
+  { t:19, q:"В каком заголовке обычно передаётся Access Token?", o:["`Content-Type`","`Authorization: Bearer <токен>`","`Cookie: session`","`X-Api-Version`"], c:1, e:"Стандарт — Authorization: Bearer <token>." },
+  { t:19, q:"Отпечаток пальца и лицо — это фактор...", o:["«что ты знаешь»","«что ты имеешь»","«что ты есть» (биометрия)","«где ты»"], c:2, e:"Биометрия — фактор «что ты есть»." },
+
+  // ---------- 20. SDLC ----------
+  { t:20, q:"Что такое SDLC?", o:["Язык запросов","Последовательность этапов жизни ПО от идеи до вывода из эксплуатации","Тип базы данных","Фреймворк тестирования"], c:1, e:"Software Development Life Cycle — жизненный цикл ПО." },
+  { t:20, q:"Что характерно для каскадной модели (Waterfall)?", o:["Этапы строго друг за другом, назад нельзя","Постоянные итерации","Нет документации","Тесты пишутся первыми"], c:0, e:"Как водопад: назад вернуться нельзя." },
+  { t:20, q:"Главный риск каскадной модели?", o:["Слишком быстрая разработка","Ошибка в требованиях всплывёт только на тестировании","Нет этапов","Слишком гибкая"], c:1, e:"Дефект требований обнаружат через месяцы, на тестировании." },
+  { t:20, q:"Ключевая особенность V-образной модели?", o:["Нет тестирования","Каждому этапу разработки соответствует этап тестирования","Один бесконечный цикл","Отсутствие требований"], c:1, e:"Диаграмма-«V»: разработка слева, тестирование справа." },
+  { t:20, q:"На чём делает акцент спиральная модель?", o:["На документации","На управлении рисками на каждом витке","На отсутствии итераций","На одном релизе"], c:1, e:"Каждый виток оценивает риски и, при нужде, строит прототип." },
+  { t:20, q:"Какая модель самая гибкая к изменениям требований?", o:["Каскадная","V-образная","Спиральная","Никакая"], c:2, e:"Спиральная позволяет уточнять требования после каждой итерации." },
+  { t:20, q:"Для критичных систем (медицина, авиация) хорошо подходит...", o:["Каскадная","V-образная модель","Только спиральная","Модель не важна"], c:1, e:"V-модель ценна там, где высока цена ошибки." },
+];
+/* ============ mini markdown renderer (для точной теории из конспекта) ============ */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function inl(s){
+  s = esc(s);
+  s = s.replace(/`([^`]+)`/g,'<code>$1</code>');
+  s = s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  return s;
+}
+const KW = /\b(class|def|return|if|elif|else|for|while|in|import|from|self|cls|None|True|False|raise|pass|async|await|print|global|try|except|finally|with|lambda|not|and|or|is|yield|super|staticmethod|abstractmethod|git)\b/g;
+const LANGL = {python:'Python',py:'Python',json:'JSON',xml:'XML',yaml:'YAML',yml:'YAML',http:'HTTP',bash:'Bash',sh:'Shell',text:'Схема','':'Код'};
+
+function hlLine(line, lang){
+  const plain = (lang==='text'||lang==='');
+  let out='', last=0;
+  // strings + comments
+  const re = /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#[^\n]*)/g;
+  if(plain) return esc(line);
+  let m;
+  const src = esc(line);
+  // work on escaped text; quotes and # survive escaping
+  while((m = re.exec(src))){
+    out += kwize(src.slice(last, m.index), lang);
+    out += m[1] ? '<span class="str">'+m[1]+'</span>' : '<span class="com">'+m[2]+'</span>';
+    last = re.lastIndex;
+  }
+  out += kwize(src.slice(last), lang);
+  return out;
+}
+function kwize(s, lang){
+  if(lang==='xml'||lang==='http') s = s.replace(/(&lt;\/?[\w:?!-]+)/g,'<span class="tag">$1</span>');
+  else s = s.replace(KW,'<span class="kw">$1</span>');
+  s = s.replace(/\b(\d+(?:\.\d+)?)\b/g,'<span class="num">$1</span>');
+  return s;
+}
+function codeBlock(lines, lang){
+  const l = (lang||'').toLowerCase();
+  const label = LANGL[l] !== undefined ? LANGL[l] : l.toUpperCase();
+  const body = lines.map(x=>hlLine(x,l)).join('\n');
+  return '<div class="code"><div class="bar"><span class="dots"></span><span class="lg">'+esc(label)+'</span></div>'+
+         '<pre><code>'+body+'</code></pre></div>';
+}
+function tableBlock(rows){
+  const cells = r => r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+  const head = cells(rows[0]);
+  const body = rows.slice(2).map(cells);
+  let h = '<div class="tblwrap"><table><thead><tr>' + head.map(c=>'<th>'+inl(c)+'</th>').join('') + '</tr></thead><tbody>';
+  body.forEach(r=>{ h += '<tr>' + r.map(c=>'<td>'+inl(c)+'</td>').join('') + '</tr>'; });
+  return h + '</tbody></table></div>';
+}
+
+function renderMD(md){
+  const lines = md.split('\n');
+  let out='', i=0;
+  const flushList = (buf, tag) => buf.length ? '<'+tag+'>'+buf.map(x=>'<li>'+inl(x)+'</li>').join('')+'</'+tag+'>' : '';
+
+  while(i < lines.length){
+    let ln = lines[i];
+
+    // fenced code
+    const f = ln.match(/^```([A-Za-z0-9_+-]*)\s*$/);
+    if(f){
+      const lang=f[1]; const buf=[]; i++;
+      while(i<lines.length && !/^```\s*$/.test(lines[i])){ buf.push(lines[i]); i++; }
+      i++; out += codeBlock(buf, lang); continue;
+    }
+    // table
+    if(/^\s*\|/.test(ln) && i+1<lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i+1])){
+      const buf=[]; while(i<lines.length && /^\s*\|/.test(lines[i])){ buf.push(lines[i].trim()); i++; }
+      out += tableBlock(buf); continue;
+    }
+    // blockquote (может быть многострочный)
+    if(/^\s*>/.test(ln)){
+      const buf=[]; while(i<lines.length && /^\s*>/.test(lines[i])){ buf.push(lines[i].replace(/^\s*>\s?/,'')); i++; }
+      out += '<blockquote>'+buf.filter(Boolean).map(x=>'<p>'+inl(x)+'</p>').join('')+'</blockquote>'; continue;
+    }
+    // headings
+    let h = ln.match(/^(#{3,4})\s+(.+)$/);
+    if(h){ const t=h[1].length===3?'h3':'h4'; out += '<'+t+'>'+inl(h[2].replace(/\*\*/g,''))+'</'+t+'>'; i++; continue; }
+    // hr
+    if(/^\s*---+\s*$/.test(ln)){ out += '<hr>'; i++; continue; }
+    // unordered list
+    if(/^\s*[-*]\s+/.test(ln)){
+      const buf=[]; while(i<lines.length && /^\s*[-*]\s+/.test(lines[i])){ buf.push(lines[i].replace(/^\s*[-*]\s+/,'')); i++; }
+      out += flushList(buf,'ul'); continue;
+    }
+    // ordered list
+    if(/^\s*\d+\.\s+/.test(ln)){
+      const buf=[]; while(i<lines.length && /^\s*\d+\.\s+/.test(lines[i])){ buf.push(lines[i].replace(/^\s*\d+\.\s+/,'')); i++; }
+      out += flushList(buf,'ol'); continue;
+    }
+    // blank
+    if(!ln.trim()){ i++; continue; }
+    // paragraph (склеиваем подряд идущие строки)
+    const buf=[ln];
+    i++;
+    while(i<lines.length && lines[i].trim() && !/^(```|\s*\||\s*>|#{3,4}\s|\s*---+\s*$|\s*[-*]\s|\s*\d+\.\s)/.test(lines[i])){ buf.push(lines[i]); i++; }
+    out += '<p>'+inl(buf.join(' '))+'</p>';
+  }
+  return out;
+}
+/* ============ storage ============ */
+const KEY='progtrainer.v2';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return {}; } }
+function save(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
+let store = load();
+store.bestByTopic = store.bestByTopic || {};   // доп. тренажёр
+store.examStats   = store.examStats   || {};   // {"7": {ok:2, bad:1}}
+store.totalAnswered = store.totalAnswered || 0;
+store.totalCorrect  = store.totalCorrect  || 0;
+store.bestStreak    = store.bestStreak    || 0;
+
+/* ============ helpers ============ */
+const $=s=>document.querySelector(s);
+const el=(t,c)=>{const e=document.createElement(t); if(c)e.className=c; return e;};
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function topicName(id){ const t=TOPICS.find(x=>x.id===id); return t?t.name:('Тема '+id); }
+const KEYS=['A','B','C','D'];
+
+/* ============ items ============
+   Единый формат: {label, text, opts:[{txt,ok}], correctIdx, explain, exam(ref|null), topicId(|null)} */
+function examItem(e){
+  const order = shuffle([0,1,2,3]);
+  const opts = order.map(i=>({txt:e.o[i], ok:i===e.c}));
+  return { label:'Вопрос '+e.n, text:e.prompt, opts, correctIdx:opts.findIndex(o=>o.ok),
+           explain:null, exam:e, topicId:null, answered:false, chosen:-1 };
+}
+function drillItem(q){
+  const order = shuffle([0,1,2,3]);
+  const opts = order.map(i=>({txt:q.o[i], ok:i===q.c}));
+  return { label:topicName(q.t), text:q.q, opts, correctIdx:opts.findIndex(o=>o.ok),
+           explain:q.e, exam:null, topicId:q.t, answered:false, chosen:-1 };
+}
+
+/* ============ session ============ */
+let sess=null;
+function begin(items, meta){
+  sess = Object.assign({ items, idx:0, correct:0, wrong:0, streak:0, best:0,
+                         perGroup:{}, wrongList:[] }, meta);
+  show('quiz'); renderQuestion();
+}
+const startExam      = ()      => begin(shuffle(EXAM).map(examItem), {mode:'exam', title:'Экзамен'});
+const startExamOne   = (e)     => begin([examItem(e)], {mode:'exam1', title:'Вопрос '+e.n, examRef:e});
+const startQuick     = ()      => begin(shuffle(QUESTIONS).slice(0,15).map(drillItem), {mode:'quick'});
+const startMarathon  = ()      => begin(shuffle(QUESTIONS).map(drillItem), {mode:'marathon'});
+const startTopic     = (id)    => begin(shuffle(QUESTIONS.filter(q=>q.t===id)).map(drillItem), {mode:'topic', topicId:id});
+const startRetry     = (items) => begin(items.map(it=> it.exam ? examItem(it.exam) : drillItem(it.srcQ)), {mode:'retry'});
+
+function show(id){ ['home','quiz','theory','results'].forEach(s=>$('#'+s).classList.toggle('hidden', s!==id)); window.scrollTo(0,0); }
+
+/* ============ quiz ============ */
+function renderQuestion(){
+  const it=sess.items[sess.idx], n=sess.items.length;
+  $('#counter').textContent=(sess.idx+1)+' / '+n;
+  $('#fill').style.width=(sess.idx/n*100)+'%';
+  $('#streak').textContent = sess.streak>=2 ? ('🔥 серия '+sess.streak) : '';
+
+  const card=$('#qcard'); card.classList.remove('anim'); void card.offsetWidth; card.classList.add('anim');
+  $('#q-topic').textContent = it.label;
+  $('#q-text').innerHTML = inl(it.text);
+
+  const box=$('#opts'); box.innerHTML='';
+  it.opts.forEach((o,i)=>{
+    const b=el('button','opt'); b.dataset.i=i;
+    b.innerHTML='<span class="key">'+KEYS[i]+'</span><span class="txt">'+inl(o.txt)+'</span><span class="mark"></span>';
+    b.addEventListener('click',()=>select(i));
+    box.appendChild(b);
+  });
+  const ex=$('#explain'); ex.classList.remove('show'); ex.innerHTML='';
+  $('#q-theory').classList.add('hidden');
+  $('#cancel').classList.add('hidden');
+  $('#hint').classList.remove('hidden');
+  it.selected = -1;
+  const nx=$('#next'); nx.disabled=true; nx.textContent='Выбери вариант';
+}
+
+/* выбор варианта (галочка) — повторный тап снимает выбор */
+function select(i){
+  const it=sess.items[sess.idx];
+  if(it.answered) return;
+  it.selected = (it.selected===i) ? -1 : i;   // отмена галочки
+  [...$('#opts').children].forEach((b,j)=> b.classList.toggle('sel', j===it.selected));
+  const nx=$('#next');
+  nx.disabled = it.selected<0;
+  nx.textContent = it.selected<0 ? 'Выбери вариант' : 'Ответить';
+  $('#cancel').classList.toggle('hidden', it.selected<0);
+}
+function cancelChoice(){
+  const it=sess.items[sess.idx];
+  if(it.answered || it.selected<0) return;
+  select(it.selected);   // снимает галочку
+}
+
+function choose(i){
+  const it=sess.items[sess.idx];
+  if(it.answered || i<0) return;
+  it.answered=true; it.chosen=i;
+  $('#cancel').classList.add('hidden');
+  $('#hint').classList.add('hidden');
+  const correct = it.opts[i].ok;
+
+  [...$('#opts').children].forEach((b,j)=>{
+    b.classList.add('locked'); b.classList.remove('sel');
+    if(it.opts[j].ok){ b.classList.add('correct'); b.querySelector('.mark').textContent='✓'; }
+    else if(j===i){ b.classList.add('wrong'); b.querySelector('.mark').textContent='✕'; }
+    else b.classList.add('dim');
+  });
+
+  const g = it.exam ? ('e'+it.exam.n) : ('t'+it.topicId);
+  sess.perGroup[g] = sess.perGroup[g] || {ok:0,total:0, name: it.label, exam: it.exam||null, topicId: it.topicId};
+  sess.perGroup[g].total++;
+  if(correct){ sess.correct++; sess.streak++; sess.best=Math.max(sess.best,sess.streak); sess.perGroup[g].ok++; }
+  else { sess.wrong++; sess.streak=0; sess.wrongList.push(it); }
+
+  store.totalAnswered++; if(correct) store.totalCorrect++;
+  store.bestStreak = Math.max(store.bestStreak, sess.best);
+  if(it.exam){
+    const st = store.examStats[it.exam.n] || {ok:0,bad:0};
+    correct ? st.ok++ : st.bad++;
+    store.examStats[it.exam.n]=st;
+  }
+  save(store);
+
+  const ex=$('#explain');
+  const head = correct ? '<b>Верно.</b> ' : ('<b>Правильный ответ: '+KEYS[it.correctIdx]+'.</b> ');
+  ex.innerHTML = head + (it.explain ? inl(it.explain) : inl('Полный ответ по конспекту — ниже.'));
+  ex.classList.add('show');
+
+  if(it.exam){
+    const tb=$('#q-theory'); tb.classList.remove('hidden');
+    tb.onclick = ()=> openTheory(it.exam, 'quiz');
+  }
+  $('#streak').textContent = sess.streak>=2 ? ('🔥 серия '+sess.streak) : '';
+  const last = sess.idx===sess.items.length-1;
+  const nx=$('#next'); nx.disabled=false; nx.textContent = last ? 'Показать результат →' : 'Дальше →';
+}
+function nextQ(){
+  const it=sess.items[sess.idx];
+  if(!it.answered){                       // 1-е нажатие: подтвердить выбранный вариант
+    if(it.selected>=0) choose(it.selected);
+    return;
+  }
+  if(sess.idx < sess.items.length-1){ sess.idx++; renderQuestion(); }
+  else finish();
+}
+
+/* ============ theory ============ */
+let theoryBack='home', theoryRef=null;
+function openTheory(e, from){
+  theoryRef=e; theoryBack=from||'home';
+  $('#th-num').textContent = 'Вопрос ' + e.n;
+  $('#th-title').textContent = e.title;
+  $('#th-body').innerHTML = renderMD(e.md);
+  show('theory');
+}
+$('#th-back').addEventListener('click', ()=>{ theoryBack==='quiz' ? show('quiz') : (theoryBack==='results' ? show('results') : (refreshHome(), show('home'))); });
+$('#th-home').addEventListener('click', ()=>{ refreshHome(); show('home'); });
+$('#th-test').addEventListener('click', ()=> startExamOne(theoryRef));
+
+/* ============ results ============ */
+function finish(){
+  const total=sess.items.length, ok=sess.correct, pct=Math.round(ok/total*100);
+  show('results');
+
+  const v=$('#verdict');
+  v.className='verdict '+(pct>=80?'pass':pct>=50?'warn':'fail');
+  v.textContent = pct>=80?'СДАНО':pct>=50?'ПОЧТИ':'НУЖНА ПРАКТИКА';
+
+  const circ=314, off=circ-(pct/100*circ), fg=$('#ring-fg');
+  fg.style.transition='none'; fg.style.strokeDashoffset=circ;
+  requestAnimationFrame(()=>{ fg.style.transition='stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)'; fg.style.strokeDashoffset=off; });
+  const pctEl=$('#r-pct'); let cur=0; const step=Math.max(1,Math.round(pct/28));
+  const tick=setInterval(()=>{ cur=Math.min(pct,cur+step); pctEl.textContent=cur+'%'; if(cur>=pct)clearInterval(tick); },28);
+  $('#r-ok').textContent=ok; $('#r-bad').textContent=sess.wrong; $('#r-streak').textContent=sess.best;
+
+  // разбивка
+  const groups=Object.values(sess.perGroup);
+  const tbWrap=$('#tb-wrap'), tb=$('#tbreak'); tb.innerHTML='';
+  $('#tb-label').textContent = (sess.mode==='exam'||sess.mode==='exam1') ? 'Разбивка по вопросам' : 'Разбивка по темам';
+  if(groups.length>1){
+    tbWrap.classList.remove('hidden');
+    groups.sort((a,b)=>(a.ok/a.total)-(b.ok/b.total)).forEach(g=>{
+      const p=Math.round(g.ok/g.total*100);
+      const col = p>=80?'var(--ok)': p>=50?'var(--gold)':'var(--bad)';
+      const row=el('div','tb');
+      const nm = g.exam ? ('Вопрос '+g.exam.n+'. '+g.exam.title) : g.name;
+      row.innerHTML='<div class="row"><span class="nm">'+esc(nm)+'</span><span class="sc">'+g.ok+'/'+g.total+' · '+p+'%</span></div>'+
+                    '<div class="tbar"><i style="width:'+p+'%;background:'+col+'"></i></div>';
+      if(g.exam) row.addEventListener('click',()=>openTheory(g.exam,'results'));
+      tb.appendChild(row);
+    });
+  } else tbWrap.classList.add('hidden');
+
+  if(sess.mode==='topic'){
+    const prev=store.bestByTopic[sess.topicId]||0;
+    if(pct>prev){ store.bestByTopic[sess.topicId]=pct; save(store); }
+  }
+
+  // разбор ошибок
+  const rw=$('#rev-wrap'), rv=$('#review'); rv.innerHTML='';
+  if(sess.wrongList.length){
+    rw.classList.remove('hidden');
+    sess.wrongList.forEach(it=>{
+      const mine=it.opts[it.chosen], right=it.opts[it.correctIdx];
+      const c=el('div','rev');
+      c.innerHTML='<div class="q">'+inl(it.text)+'</div>'+
+        '<div class="ans mine"><span class="lbl">ты</span><span class="val">'+inl(mine.txt)+'</span></div>'+
+        '<div class="ans right"><span class="lbl">верно</span><span class="val">'+inl(right.txt)+'</span></div>';
+      if(it.exam){
+        const b=el('button','revtheory'); b.textContent='📖 Открыть теорию по вопросу '+it.exam.n;
+        b.addEventListener('click',()=>openTheory(it.exam,'results'));
+        c.appendChild(b);
+      }
+      rv.appendChild(c);
+    });
+    $('#retry-wrong').classList.remove('hidden');
+  } else { rw.classList.add('hidden'); $('#retry-wrong').classList.add('hidden'); }
+
+  refreshHome();
+}
+
+/* ============ home ============ */
+function refreshHome(){
+  $('#exam-count').textContent = EXAM.length + ' вопросов';
+  $('#drill-count').textContent = QUESTIONS.length + ' вопросов · ' + TOPICS.length + ' тем';
+  $('#st-total').textContent = store.totalAnswered;
+  $('#st-acc').textContent = store.totalAnswered ? Math.round(store.totalCorrect/store.totalAnswered*100)+'%' : '—';
+  $('#st-streak').textContent = store.bestStreak;
+
+  const list=$('#exam-list'); list.innerHTML='';
+  EXAM.forEach(e=>{
+    const st=store.examStats[e.n];
+    const b=el('button','exam-item');
+    let meta = 'ещё не проходил';
+    if(st && (st.ok+st.bad)>0){
+      const p=Math.round(st.ok/(st.ok+st.bad)*100);
+      meta = '<span class="'+(p>=80?'ok':(p>=50?'':'bad'))+'">'+p+'%</span> · верно '+st.ok+', ошибок '+st.bad;
+    }
+    b.innerHTML='<span class="num">'+esc(e.n)+'</span>'+
+      '<span class="body"><span class="name">'+esc(e.title)+'</span><span class="meta">'+meta+'</span></span>'+
+      '<span class="go">›</span>';
+    b.addEventListener('click',()=>openTheory(e,'home'));
+    list.appendChild(b);
+  });
+
+  const box=$('#topics'); box.innerHTML='';
+  TOPICS.forEach((t,idx)=>{
+    const count=QUESTIONS.filter(q=>q.t===t.id).length;
+    const best=store.bestByTopic[t.id];
+    const cls = best==null?'':(best>=80?'good':best>=50?'mid':'low');
+    const b=el('button','topic');
+    b.innerHTML='<span class="num">'+String(idx+1).padStart(2,'0')+'</span>'+
+      '<span class="body"><span class="name">'+esc(t.name)+'</span><span class="meta">'+count+' вопр.</span></span>'+
+      '<span class="best '+cls+'">'+(best!=null?('<b>'+best+'%</b>лучший'):'<b>—</b>новая')+'</span>';
+    b.addEventListener('click',()=>startTopic(t.id));
+    box.appendChild(b);
+  });
+}
+
+/* ============ events ============ */
+$('#run-exam').addEventListener('click', startExam);
+document.querySelectorAll('.qbtn').forEach(b=>b.addEventListener('click',()=>{
+  b.dataset.mode==='quick' ? startQuick() : startMarathon();
+}));
+$('#toggle-topics').addEventListener('click',()=>{
+  const t=$('#topics'), hid=t.classList.toggle('hidden');
+  $('#toggle-topics').textContent = hid ? 'Показать темы ↓' : 'Скрыть темы ↑';
+});
+$('#next').addEventListener('click', nextQ);
+function exitQuiz(){
+  const done = sess ? sess.correct + sess.wrong : 0;
+  const msg = done ? ('Выйти из теста? Отвечено: '+done+' из '+sess.items.length+'. Результат этой сессии не сохранится.')
+                   : 'Выйти из теста?';
+  if(confirm(msg)){ refreshHome(); show('home'); }
+}
+$('#quit').addEventListener('click', exitQuiz);
+$('#cancel').addEventListener('click', cancelChoice);
+$('#again').addEventListener('click', ()=>{
+  if(sess.mode==='exam') startExam();
+  else if(sess.mode==='exam1') startExamOne(sess.examRef);
+  else if(sess.mode==='topic') startTopic(sess.topicId);
+  else if(sess.mode==='marathon') startMarathon();
+  else startQuick();
+});
+$('#tohome').addEventListener('click', ()=>{ refreshHome(); show('home'); });
+$('#retry-wrong').addEventListener('click', ()=>{
+  const items = sess.wrongList.map(it=> it.exam ? examItem(it.exam) : null).filter(Boolean);
+  const drills = sess.wrongList.filter(it=>!it.exam).map(it=>{
+    const q = QUESTIONS.find(q=> q.q===it.text && q.t===it.topicId);
+    return q ? drillItem(q) : null;
+  }).filter(Boolean);
+  begin(shuffle(items.concat(drills)), {mode:'retry'});
+});
+document.addEventListener('keydown', e=>{
+  if($('#quiz').classList.contains('hidden')) return;
+  const map={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3,'ф':0,'и':1,'с':2,'в':3};
+  const k=e.key.toLowerCase();
+  const it=sess&&sess.items[sess.idx];
+  if(k in map) select(map[k]);
+  else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); nextQ(); }
+  else if(e.key==='Backspace'){ e.preventDefault(); cancelChoice(); }
+  else if(e.key==='Escape') exitQuiz();
+});
+
+refreshHome();
+
+/* PWA: офлайн-режим и установка на главный экран */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(e => console.log('SW:', e));
+  });
+}
+</script>
+</body>
+</html>
