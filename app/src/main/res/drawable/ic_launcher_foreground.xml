@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- левая фигурная скобка -->
+    <path
+        android:pathData="M46,36 C41,36 39,38 39,43 L39,49 C39,52 37.5,53.5 35,54 C37.5,54.5 39,56 39,59 L39,65 C39,70 41,72 46,72"
+        android:strokeWidth="5.5"
+        android:strokeColor="#8B7BFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- правая фигурная скобка -->
+    <path
+        android:pathData="M62,36 C67,36 69,38 69,43 L69,49 C69,52 70.5,53.5 73,54 C70.5,54.5 69,56 69,59 L69,65 C69,70 67,72 62,72"
+        android:strokeWidth="5.5"
+        android:strokeColor="#5B8CFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
